@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Word Cloud Example</title>
+    <script src="js/d3.v3.min.js"></script>
+    <script src="js/d3.layout.cloud.js"></script>
+    <!--<script src="../../ISM/ismApp.js"></script>-->
+    <!--<script src="../d3-cloud/build/d3.layout.cloud.js"></script>-->
+</head>
+<style>
+    body {
+        font-family:"Lucida Grande","Droid Sans",Arial,Helvetica,sans-serif;
+    }
+    rect {
+        stroke: black;
+        stroke-width: 0.1;
+    }
+    .legend {
+        border: 1px solid #555555;
+        border-radius: 5px 5px 5px 5px;
+        font-size: 0.8em;
+        margin: 10px;
+        padding: 8px;
+    }
+    .bld {
+        font-weight: bold;
+    }
+    input{
+        margin: 2px
+    }
+</style>
+<body>
+<div class="views">Different views:
+    <list>
+        <li><a href="Clustered.html">Clustered view</a></li>
+        <li><a href="Uncluttered.html">Uncluttered view</a></li>
+    </list>
+</div>
+<div id="rectCloud"></div>
+
+<script src="js/test.js"></script>
+<!--<script src="js/layout.js"></script>-->
+</body>
+
+</html>

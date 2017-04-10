@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Uncluttered Example</title>
+    <link href="styles/bootstrap.min.css" rel="stylesheet">
+    <link href="lib/dc/dc.css" rel="stylesheet">
+
+    <script src="js/d3.v3.min.js"></script>
+    <script src="js/d3.layout.cloud.js"></script>
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/crossfilter.js"></script>
+    <script src="lib/dc/dc.js"></script>
+</head>
+<style>
+    body {
+        font-family:"Lucida Grande","Droid Sans",Arial,Helvetica,sans-serif;
+    }
+    rect {
+        stroke: black;
+        stroke-width: 0.1;
+    }
+    .legend {
+        border: 1px solid #555555;
+        border-radius: 5px 5px 5px 5px;
+        font-size: 0.8em;
+        margin: 10px;
+        padding: 8px;
+    }
+    .bld {
+        font-weight: bold;
+    }
+</style>
+<body>
+<h1 style="margin-left: 150px"> Here is the interaction </h1>
+<div class="container">
+    <div class="row clearfix">
+        <div class="views col-xs-3">Different views:
+            <ul>
+                <li><a href="myCloud.html">myCloud</a></li>
+                <li><a href="Clustered.html">Clustered view</a></li>
+            </ul>
+        </div>
+        <div class="tips col-xs-3 column right"></div>
+        <h5>selected clickstream</h5>
+        <div class="showup col-xs-3 column "></div>
+    </div>
+    <hr />
+    <div class="row">
+        <div class="segment col-xs-3"></div>
+        <div class="gender col-xs-3"></div>
+        <div class="years col-xs-3"></div>
+        <div class="cartSize col-xs-3"></div>
+    </div>
+    <hr />
+    <div id="Uncluttered"></div>
+</div>
+
+<!--<script src="js/test.js"></script>-->
+<script src="js/layout.js"></script>
+<script src="js/Uncluttered.js"></script>
+<script src="js/on.js"></script>
+<!--<script src="js/kmeans.js"></script>-->
+</body>
+</html>
