@@ -67,6 +67,7 @@ function draw1(id,rects,maxSize,data) {
             return d.height;
         })
         .style("fill", function (d) {
+          //  showup(d,data);
             return color(d.type);
         })
         .on("click",function (d) {
@@ -76,7 +77,7 @@ function draw1(id,rects,maxSize,data) {
 
 var size = [20, 20],widthScale = [5, 20],showN=1000,x=0.1;
 
-d3.json("data/names.json",function (res) {
+d3.json("../data/names.json",function (res) {
     for(var i=0;i<res.length;i++){
         res[i].s=res[i].Pik*res[i].num;
 
@@ -94,7 +95,7 @@ d3.json("data/names.json",function (res) {
 //txt原始数据的处理
 function showStatistics(list){
     // console.log(list);
-$.get('data/cartbehavior1S.txt').success(function (content) {
+$.get('../data/cartbehavior1S.txt').success(function (content) {
     var data=[];
     content=content.split(/\n/);
    //  var data=typeof (content);

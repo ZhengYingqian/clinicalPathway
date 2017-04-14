@@ -59,29 +59,3 @@ function addTips(cla,data) {
         });
 
 }
-
-
-// circle.on("click", function(){
-//     // 添加交互内容
-//
-// });
-// function num2state(num) {
-//     if(dir(num)){
-//         return dir(num);
-//     }else return 'Other Options';
-// }
-
-var size,clusters,plists,
-    k=64;
-d3.json('data/names.json',function (res) {
-    for(var i=0;i<res.length;i++){
-        res[i].s=res[i].Pik*res[i].num;
-
-    }
-    res.sort(function (a,b) {
-        return b.s-a.s; //按照由大到小排序
-    });
-    size=[width,height];
-    [clusters,plists]=kMeans1(res ,k,size);
-
-});
