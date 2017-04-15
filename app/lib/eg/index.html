@@ -151,7 +151,7 @@ a {
       .on("brushstart", function(d) {
           svg = svg.call(d3.behavior.zoom().on("zoom", null));
         console.log('brushstart');
-        node.each(function(d) { d.previouslySelected = shiftKey && d.selected;console.log(d.previouslySelected) });
+        node.each(function(d) { d.previouslySelected = shiftKey && d.selected });
         if (!shiftKey) {
           d3.event.target.clear();
           d3.select(this).call(d3.event.target);

@@ -148,8 +148,10 @@ function draw(id,rects,maxSize,data) {
             showup(d,data);
         });
 }
-
+var s='<hr />'+'<h3>Selected Stream:</h3><div class = \'stastic\'></div><hr /><h3>Statistic Data</h3>';
 function showup(d,data) {
+    $('.showup').html(s);
+   // document.write(s);
     console.log(d);
    //console.log(data);
     var temp,list,base1=[0,0];
@@ -161,9 +163,9 @@ function showup(d,data) {
    }
    list=temp.rects;
     i=-1;
-    d3.select(".showup svg").remove();
-    d3.select(".showup text").remove();
-    var svg =d3.select(".showup").append('svg')
+    d3.select(".stastic svg").remove();
+    d3.select(".stastic text").remove();
+    var svg =d3.select(".stastic").append('svg')
         .attr("width",400)
         .attr("height",20)
         .append("g")
@@ -194,7 +196,7 @@ function showup(d,data) {
     }
     // console.log(newList);
     showStatistics(newList);
-   d3.select('.showup').append('text')
+   d3.select('.stastic').append('text')
         .attr('x',base1[0])
         .attr('y',base1[1]+40)
         .text(txt);

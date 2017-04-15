@@ -75,11 +75,11 @@ function draw1(id,rects,maxSize,data) {
         });
 }
 
-var size = [20, 20],widthScale = [5, 20],showN=1000,x=0.1;
+var size = [20, 20],widthScale = [5, 20],showN=3000,x=0.1;
 
 d3.json("../data/names.json",function (res) {
     for(var i=0;i<res.length;i++){
-        res[i].s=res[i].Pik*res[i].num;
+        res[i].s=res[i].Pik*res[i].p;
 
     }
     res.sort(function (a,b) {

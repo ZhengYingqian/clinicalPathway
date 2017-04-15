@@ -2,7 +2,7 @@
  * Created by yqzheng on 2017/4/2.
  */
 //画布大小
-var width = 200, height = 100;
+var width = 150, height = 100;
 var dic={
     '1':'Title',
     '2':'Picture',

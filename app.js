@@ -26,7 +26,7 @@ app.use(express.static(path.join(__dirname, 'app')));
 
 
 app.get('/', function (req, res) {
-    res.sendfile('app/Uncluttered.html');
+    res.sendfile('app/index.html');
 });
 
 server.listen(app.get('port'), function () {
