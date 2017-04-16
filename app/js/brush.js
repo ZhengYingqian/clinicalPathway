@@ -78,7 +78,7 @@ function get_selection(){
         .attr("dy", ".35em")
         .style("text-anchor", "end")
         .text(function(d) { return d; });
-    legend.on('mouseover',function (d) {
+    legend.on('click',function (d) {
         showSelected(d);
     });
  /*   legend.on('mouseout',function (d) {
