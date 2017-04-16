@@ -247,8 +247,8 @@ d3.json("../data/names3.json",function (res) {
         .on("mousemove",function(d){
             /* 鼠标移动时，更改样式 left 和 top 来改变提示框的位置 */
 
-            tooltip.style("left", (d3.event.pageX) + "px")
-                .style("top", (d3.event.pageY) + "px");
+            tooltip.style("left", (d3.event.pageX)-380 + "px")
+                .style("top", (d3.event.pageY)-20 + "px");
         })
         .on("mouseout",function(d){
             /* 鼠标移出时，将透明度设定为0.0（完全透明）*/
