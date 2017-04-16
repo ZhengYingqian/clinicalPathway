@@ -51,7 +51,7 @@
                         <li>
                             <a href="Clustered.html">Clustered view</a>
                         </li>
-                        <li><a href="myCloud.html">myCloud</a></li>
+                        <!--<li><a href="myCloud.html">myCloud</a></li>-->
                         <!--<li><a href="../lib/eg/index.html">brush</a></li>-->
                         <li class="active"><a href="Brush.html">Brush</a></li>
                     </ul>
@@ -91,9 +91,16 @@
             <h3>
                 Bursh View
             </h3>
+            <p>本页面实现了一下几个功能：</p>
+            <p>1、以circle的形式显示所有聚类结果，移动到circle上可以显示具体序列信息和类别（tooltip功能）</p>
+            <p>   2、选中节点：点击选中单个，按住shift键用brush选择区域节点。</p>
+            <p>  3、点击get selection按钮，选中的类的信息会显示在右侧（legend功能）。支持多选。点击clear selection按钮则类信息清空。</p>
+            <p> 4、zoom功能，放大缩小</p>
+            <br />
             <button type="button" class="btn btn-info" onclick="get_selection();">Get Selection</button>
             <button type="button" class="btn btn-info" onclick="clear_selection();">Clear Selection</button>
-            <button type="button" class="btn btn-info pull-right" onclick=" showSelected();">Show all Selected</button>
+            <!--<button type="button" class="btn btn-info pull-right" onclick=" showSelected();">Show all Selected</button>-->
+            <span class="pull-right">mouseover show clusters</span>
             <br />
             <br />
             <div class="Brush"></div>

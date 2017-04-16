@@ -16,6 +16,13 @@ var y = d3.scale.linear()
     .range([height, 0]);
 
 var color = d3.scale.category20();
+console.log(color);
+// var a =d3.rgb(255,0,0);
+// var b =d3.rgb(0,255,255);
+// var color1 = d3.interpolate(a,b);
+// var linear = d3.scale.linear()
+//     .domain([1,64])
+//     .range([0,1]);
 
 var xAxis = d3.svg.axis()
     .scale(x)
@@ -59,7 +66,11 @@ function get_selection(){
         .attr("x", width +10)
         .attr("width", 18)
         .attr("height", 18)
-        .style("fill", color);
+        .style("fill", function(d){
+            // console.log(d);
+            // return color1(linear(d))});
+            return color(d)});
+        // .stream('fill',color);
 
     legend.append("text")
         .attr("x", width +44)
@@ -198,7 +209,8 @@ d3.json("../data/names3.json",function (res) {
         .attr("r", function(d) { return d.selected ? 5 : 6; })
         .attr("cx", function(d) { return x(d.OutputX*size[0]); })
         .attr("cy", function(d) { return y(d.OutputY*size[1]); })
-        .style("fill", function(d) { return color(d.belong); })
+        // .style("fill", function(d) { return color1(linear(d.belong));})
+        .style("fill", function(d) { return color(d.belong);})
         .on("mousedown", function(d) {
             if (shiftKey) {
                 d3.select(this).classed("selected", d.selected = true);
@@ -235,8 +247,8 @@ d3.json("../data/names3.json",function (res) {
         .on("mousemove",function(d){
             /* 鼠标移动时，更改样式 left 和 top 来改变提示框的位置 */
 
-            tooltip.style("left", (d3.event.pageX)-380 + "px")
-                .style("top", (d3.event.pageY)-20 + "px");
+            tooltip.style("left", (d3.event.pageX) + "px")
+                .style("top", (d3.event.pageY) + "px");
         })
         .on("mouseout",function(d){
             /* 鼠标移出时，将透明度设定为0.0（完全透明）*/
