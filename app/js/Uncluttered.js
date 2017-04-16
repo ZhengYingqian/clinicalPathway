@@ -48,7 +48,7 @@ function draw1(id,rects,maxSize,data) {
         .attr("width", 1000)
         .attr("height", 1000)
         .append("g")
-        .attr("transform", "translate(150,250)")
+        .attr("transform", "translate(150,550)")
         .selectAll(".rect")//选择标签rect
         .data(rects)//绑定数据
         .enter().append("rect")//表示rect的连续绑定
@@ -75,7 +75,7 @@ function draw1(id,rects,maxSize,data) {
         });
 }
 
-var size = [20, 20],widthScale = [5, 20],showN=3000,x=0.1;
+var size = [20, 20],widthScale = [5, 20],showN=1000,x=0.1;
 
 d3.json("../data/names.json",function (res) {
     for(var i=0;i<res.length;i++){

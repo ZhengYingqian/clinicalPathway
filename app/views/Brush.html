@@ -4,8 +4,10 @@
     <title>Brush Example</title>
     <link href="../styles/bootstrap.min.css" rel="stylesheet">
     <link href="../lib/dc/dc.css" rel="stylesheet">
+    <link href="../styles/brush.css" rel="stylesheet">
 
     <script src="../lib/d3.v3.min.js"></script>
+    <!--<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>-->
     <script src="../lib/d3.layout.cloud.js"></script>
     <script src="../lib/jquery.min.js"></script>
     <script src="../lib/bootstrap.min.js"></script>
@@ -89,12 +91,14 @@
             <h3>
                 Bursh View
             </h3>
-            <div id="Brush"></div>
+            <button type="button" class="btn btn-default" onclick="get_selection();">Get Selection</button>
+            <button type="button" class="btn btn-default" onclick="clear_selection();">Clear Selection</button>
+            <div class="Brush"></div>
         </div>
     </div>
 </div>
 <script src="../js/brush.js"></script>
-<script src="../js/layout.js"></script>
-<script src="../js/Uncluttered.js"></script>
-<script src="../js/on.js"></script>
+<!--<script src="../js/layout.js"></script>-->
+<!--<script src="../js/Uncluttered.js"></script>-->
+<!--<script src="../js/on.js"></script>-->
 </body>
