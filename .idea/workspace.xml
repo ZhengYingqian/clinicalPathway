@@ -3,7 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="43e34832-fed5-4ce7-aa16-6771ebaffdea" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app.js" afterPath="$PROJECT_DIR$/app.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/js/brush.js" afterPath="$PROJECT_DIR$/app/js/brush.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/views/Brush.html" afterPath="$PROJECT_DIR$/app/views/Brush.html" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -25,10 +26,10 @@
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="app.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="app.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="207">
+            <state relative-caret-position="247">
               <caret line="13" column="42" lean-forward="true" selection-start-line="13" selection-start-column="42" selection-end-line="13" selection-end-column="42" />
               <folding />
             </state>
@@ -38,10 +39,11 @@
       <file leaf-file-name="Uncluttered.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/js/Uncluttered.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2679">
-              <caret line="149" column="45" lean-forward="true" selection-start-line="149" selection-start-column="45" selection-end-line="149" selection-end-column="45" />
+            <state relative-caret-position="-798">
+              <caret line="73" column="15" lean-forward="false" selection-start-line="73" selection-start-column="12" selection-end-line="73" selection-end-column="18" />
               <folding>
                 <element signature="n#!!doc;n#getLayout1#0" expanded="false" />
+                <element signature="n#!!block;n#getLayout1#0" expanded="false" />
                 <element signature="n#!!block;n#kMeans1#0" expanded="false" />
                 <element signature="e#10067#10077#0" expanded="false" />
                 <element signature="n#!!block;n#calculateCenter#0" expanded="false" />
@@ -53,8 +55,8 @@
       <file leaf-file-name="Brush.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/views/Brush.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="424">
-              <caret line="95" column="3" lean-forward="true" selection-start-line="95" selection-start-column="3" selection-end-line="95" selection-end-column="3" />
+            <state relative-caret-position="304">
+              <caret line="94" column="108" lean-forward="false" selection-start-line="94" selection-start-column="108" selection-end-line="94" selection-end-column="108" />
               <folding>
                 <element signature="n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="false" />
               </folding>
@@ -86,15 +88,19 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="brush.js" pinned="false" current-in-tab="false">
+      <file leaf-file-name="brush.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/js/brush.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="369">
-              <caret line="77" column="1" lean-forward="true" selection-start-line="77" selection-start-column="1" selection-end-line="77" selection-end-column="1" />
+            <state relative-caret-position="1330">
+              <caret line="72" column="30" lean-forward="false" selection-start-line="72" selection-start-column="30" selection-end-line="72" selection-end-column="30" />
               <folding>
                 <element signature="e#0#43#0" expanded="false" />
-                <element signature="e#2138#2168#0" expanded="false" />
-                <element signature="e#5845#6127#0" expanded="false" />
+                <element signature="e#3580#3684#0" expanded="false" />
+                <element signature="e#3900#4272#0" expanded="false" />
+                <element signature="e#4310#4982#0" expanded="false" />
+                <element signature="e#5023#5207#0" expanded="false" />
+                <element signature="e#5232#5589#0" expanded="false" />
+                <element signature="e#7473#8212#0" expanded="false" />
                 <element signature="n#!!block;n#getLayout2#0" expanded="false" />
                 <element signature="n#!!block;n#arradd#0" expanded="false" />
               </folding>
@@ -139,11 +145,11 @@
         <option value="$PROJECT_DIR$/app/views/Uncluttered.html" />
         <option value="$PROJECT_DIR$/app/lib/eg/index.html" />
         <option value="$PROJECT_DIR$/app/styles/brush.css" />
-        <option value="$PROJECT_DIR$/app/views/Brush.html" />
         <option value="$PROJECT_DIR$/app/js/layout.js" />
         <option value="$PROJECT_DIR$/app/js/Uncluttered.js" />
-        <option value="$PROJECT_DIR$/app/js/brush.js" />
         <option value="$PROJECT_DIR$/app.js" />
+        <option value="$PROJECT_DIR$/app/views/Brush.html" />
+        <option value="$PROJECT_DIR$/app/js/brush.js" />
       </list>
     </option>
   </component>
@@ -189,6 +195,38 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="clinicalPathway" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="clinicalPathway" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="clinicalPathway" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="clinicalPathway" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="clinicalPathway" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="js" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -313,7 +351,7 @@
       <workItem from="1491824142670" duration="1506000" />
       <workItem from="1492140950190" duration="4162000" />
       <workItem from="1492157652243" duration="29837000" />
-      <workItem from="1492301624963" duration="1223000" />
+      <workItem from="1492301624963" duration="16046000" />
     </task>
     <task id="LOCAL-00001" summary="first version">
       <created>1491824940203</created>
@@ -343,11 +381,18 @@
       <option name="project" value="LOCAL" />
       <updated>1492302686400</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="brush add">
+      <created>1492302865832</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1492302865833</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="42836000" />
+    <option name="totallyTimeSpent" value="57659000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -360,7 +405,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-1448" y="-8" width="1456" height="876" extended-state="6" />
-    <editor active="false" />
+    <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.1564482" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32972974" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -369,7 +414,7 @@
       <window_info id="npm" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32885906" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32885906" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32885906" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -410,11 +455,12 @@
     <MESSAGE value="first version" />
     <MESSAGE value="change design style 1" />
     <MESSAGE value="change design style 2" />
-    <option name="LAST_COMMIT_MESSAGE" value="change design style 2" />
+    <MESSAGE value="brush add" />
+    <option name="LAST_COMMIT_MESSAGE" value="brush add" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="4" />
+      <option name="time" value="5" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -457,8 +503,6 @@
             <element signature="e#3878#3917#0" expanded="false" />
             <element signature="e#3956#3996#0" expanded="false" />
             <element signature="e#4034#4079#0" expanded="false" />
-            <element signature="n#!!block;n#showup#0" expanded="false" />
-            <element signature="e#4491#4556#0" expanded="false" />
             <element signature="e#4916#4978#0" expanded="false" />
             <element signature="e#5010#5050#0" expanded="false" />
             <element signature="e#5162#5207#0" expanded="false" />
@@ -758,20 +802,26 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/styles/brush.css">
+    <entry file="file://$PROJECT_DIR$/app/test.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="399">
-          <caret line="21" column="14" lean-forward="false" selection-start-line="21" selection-start-column="14" selection-end-line="21" selection-end-column="14" />
-          <folding>
-            <element signature="e#311#372#0" expanded="false" />
-          </folding>
+        <state relative-caret-position="125">
+          <caret line="54" column="34" lean-forward="true" selection-start-line="54" selection-start-column="34" selection-end-line="54" selection-end-column="34" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="247">
+          <caret line="13" column="42" lean-forward="true" selection-start-line="13" selection-start-column="42" selection-end-line="13" selection-end-column="42" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/js/layout.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1425">
-          <caret line="126" column="37" lean-forward="true" selection-start-line="126" selection-start-column="37" selection-end-line="126" selection-end-column="37" />
+        <state relative-caret-position="-527">
+          <caret line="29" column="49" lean-forward="true" selection-start-line="29" selection-start-column="49" selection-end-line="29" selection-end-column="49" />
           <folding>
             <element signature="n#!!doc;n#archimedeanSpiral#0" expanded="false" />
             <element signature="n#!!block;n#archimedeanSpiral#0" expanded="false" />
@@ -785,8 +835,6 @@
             <element signature="e#3878#3917#0" expanded="false" />
             <element signature="e#3956#3996#0" expanded="false" />
             <element signature="e#4034#4079#0" expanded="false" />
-            <element signature="n#!!block;n#showup#0" expanded="false" />
-            <element signature="e#4491#4556#0" expanded="false" />
             <element signature="e#4916#4978#0" expanded="false" />
             <element signature="e#5010#5050#0" expanded="false" />
             <element signature="e#5162#5207#0" expanded="false" />
@@ -796,11 +844,13 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/test.js">
+    <entry file="file://$PROJECT_DIR$/app/styles/brush.css">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="125">
-          <caret line="54" column="34" lean-forward="true" selection-start-line="54" selection-start-column="34" selection-end-line="54" selection-end-column="34" />
-          <folding />
+        <state relative-caret-position="399">
+          <caret line="21" column="14" lean-forward="false" selection-start-line="21" selection-start-column="14" selection-end-line="21" selection-end-column="14" />
+          <folding>
+            <element signature="e#311#372#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -816,34 +866,21 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/views/Brush.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="424">
-          <caret line="95" column="3" lean-forward="true" selection-start-line="95" selection-start-column="3" selection-end-line="95" selection-end-column="3" />
+        <state relative-caret-position="304">
+          <caret line="94" column="108" lean-forward="false" selection-start-line="94" selection-start-column="108" selection-end-line="94" selection-end-column="108" />
           <folding>
             <element signature="n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/js/brush.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="369">
-          <caret line="77" column="1" lean-forward="true" selection-start-line="77" selection-start-column="1" selection-end-line="77" selection-end-column="1" />
-          <folding>
-            <element signature="e#0#43#0" expanded="false" />
-            <element signature="e#2138#2168#0" expanded="false" />
-            <element signature="e#5845#6127#0" expanded="false" />
-            <element signature="n#!!block;n#getLayout2#0" expanded="false" />
-            <element signature="n#!!block;n#arradd#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/js/Uncluttered.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2679">
-          <caret line="149" column="45" lean-forward="true" selection-start-line="149" selection-start-column="45" selection-end-line="149" selection-end-column="45" />
+        <state relative-caret-position="-798">
+          <caret line="73" column="15" lean-forward="false" selection-start-line="73" selection-start-column="12" selection-end-line="73" selection-end-column="18" />
           <folding>
             <element signature="n#!!doc;n#getLayout1#0" expanded="false" />
+            <element signature="n#!!block;n#getLayout1#0" expanded="false" />
             <element signature="n#!!block;n#kMeans1#0" expanded="false" />
             <element signature="e#10067#10077#0" expanded="false" />
             <element signature="n#!!block;n#calculateCenter#0" expanded="false" />
@@ -851,11 +888,21 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app.js">
+    <entry file="file://$PROJECT_DIR$/app/js/brush.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="207">
-          <caret line="13" column="42" lean-forward="true" selection-start-line="13" selection-start-column="42" selection-end-line="13" selection-end-column="42" />
-          <folding />
+        <state relative-caret-position="1330">
+          <caret line="72" column="30" lean-forward="false" selection-start-line="72" selection-start-column="30" selection-end-line="72" selection-end-column="30" />
+          <folding>
+            <element signature="e#0#43#0" expanded="false" />
+            <element signature="e#3580#3684#0" expanded="false" />
+            <element signature="e#3900#4272#0" expanded="false" />
+            <element signature="e#4310#4982#0" expanded="false" />
+            <element signature="e#5023#5207#0" expanded="false" />
+            <element signature="e#5232#5589#0" expanded="false" />
+            <element signature="e#7473#8212#0" expanded="false" />
+            <element signature="n#!!block;n#getLayout2#0" expanded="false" />
+            <element signature="n#!!block;n#arradd#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>

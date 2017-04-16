@@ -1,7 +1,7 @@
 /**
  * Created by yqzheng on 2017/4/15.
  */
-var size = [1000,1200];
+var size = [1100,1200];
 var widthScale = [5,20];
 var showN = 1000;
 //
@@ -30,7 +30,7 @@ var svg = d3.select(".Brush")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom);
 
-var selection=[],
+var selection=[],lis = [],
     rect,node,shiftKey;
 
 function get_selection(){
@@ -40,23 +40,21 @@ function get_selection(){
             selection.push(d);
         }
     });
+
     console.log(selection);
-    // drawLegend();
+    selection.forEach(function (d) {
+        var idx = lis.find(function(val){return val ==d.belong});
+        if(!idx){lis.push(d.belong)}
+    });
+
+    console.log(lis);
     var legend = svg.selectAll(".legend")
     // .data(color.domain())
-        .data(function(){
-            var lis=[];
-            console.log(selection);
-            selection.forEach(function (d) {
-                lis.push([d.belong,d.list])
-            });
-            return lis;
-        })
+        .data(lis)
         .enter().append("g")
         .attr("class", "legend")
         .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
-    console.log(color.domain());
-    console.log(selection);
+    // console.log(color.domain());
     legend.append("rect")
         .attr("x", width +10)
         .attr("width", 18)
@@ -64,28 +62,46 @@ function get_selection(){
         .style("fill", color);
 
     legend.append("text")
-        .attr("x", width +24)
+        .attr("x", width +44)
         .attr("y", 9)
         .attr("dy", ".35em")
         .style("text-anchor", "end")
-        .text(function(d) { return d[1]; });
-
+        .text(function(d) { return d; });
+    legend.on('mouseover',function (d) {
+        showSelected(d);
+    });
+ /*   legend.on('mouseout',function (d) {
+        clear_selection(d);
+    })*/
 }
 
+function showSelected(belong) {
+    node.each(function (d) {
+        if(d.belong ==belong){
+            d.selected = true;
+        }
+    });
+    node.classed('selected', function (d) {
+        return d.selected;});
+}
+// function hideSelected(d) {
+//
+// }
 function clear_selection() {
-    node.classed('selected', function (d) { return d.selected = false; })
-    d3.select('.legend').remove;
+    node.classed('selected', function (d) { return d.selected = false; });
+    svg.selectAll('.legend').remove();
+    lis = [];
 }
-
 
 svg = svg.append("g")
     .attr("transform", "translate(0,0)");
 
 d3.json("../data/names3.json",function (res) {
-    console.log(res.length);
+   // console.log(res.length);
 
     res.forEach(function (d) {
         d.s=d.Pik*d.p;
+        d.belong +=1;
     });
     res.sort(function (a,b) {
         return b.s-a.s; //按照由大到小排序
@@ -155,7 +171,6 @@ d3.json("../data/names3.json",function (res) {
                 d3.event.target.clear();
                 d3.select(this).call(d3.event.target);
                 svg.call(d3.behavior.zoom().x(x).y(y).on("zoom", zoom));
-                // svg.call(d3.behavior.drawLegend())
             }));
 
     function zoom() {
@@ -193,21 +208,45 @@ d3.json("../data/names3.json",function (res) {
                     return p.selected = d === p;
                 });
             }
-        });
+        })
+        ;
 
     node.classed('selected', function (d) {
         return d.selected;});
-function drawLegend() {
+
+    var tooltip = d3.select(".Brush")
+        .append("div")
+        .attr("class","tooltip")
+        .style("opacity",0.0);
+
+    node.on("mouseover",function(d){
+        /*
+         鼠标移入时，
+         （1）通过 selection.html() 来更改提示框的文字
+         （2）通过更改样式 left 和 top 来设定提示框的位置
+         （3）设定提示框的透明度为1.0（完全不透明）
+         */
+        console.log(d);
+        tooltip.html('list:'+d.list+'<br />'+'belong:'+d.belong)
+            .style("left", (d3.event.pageX)-380 + "px")
+            .style("top", (d3.event.pageY)-20 + "px")
+            .style("opacity",1.0);
+    })
+        .on("mousemove",function(d){
+            /* 鼠标移动时，更改样式 left 和 top 来改变提示框的位置 */
+
+            tooltip.style("left", (d3.event.pageX)-380 + "px")
+                .style("top", (d3.event.pageY)-20 + "px");
+        })
+        .on("mouseout",function(d){
+            /* 鼠标移出时，将透明度设定为0.0（完全透明）*/
+            tooltip.style("opacity",0.0);
+        });
+
+function drawLegend(data) {
     var legend = svg.selectAll(".legend")
     // .data(color.domain())
-        .data(function(){
-            var lis=[];
-            console.log(selection);
-            selection.forEach(function (d) {
-                lis.push([d.belong,d.list])
-            });
-            return lis;
-        })
+        .data(lis)
         .enter().append("g")
         .attr("class", "legend")
         .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
@@ -220,14 +259,18 @@ function drawLegend() {
         .style("fill", color);
 
     legend.append("text")
-        .attr("x", width +24)
+        .attr("x", width +44)
         .attr("y", 9)
         .attr("dy", ".35em")
         .style("text-anchor", "end")
         .text(function(d) { return d[1]; });
 
+    legend.on('click',function (d,data) {
+        console.log(d);
+        console.log(data[0]);
+    })
+
 }
-//     $interval(drawLegend,100);
 
     d3.select(window).on("keydown", function() {
         shiftKey = d3.event.shiftKey;
@@ -247,7 +290,6 @@ function drawLegend() {
         }
     });
 
-//result2 = getLayout2(res,size,widthScale,showN);
 });
 
 
