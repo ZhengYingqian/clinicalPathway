@@ -2,11 +2,13 @@
 <html>
 <head>
     <title>Brush Example</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+
     <link href="../styles/bootstrap.min.css" rel="stylesheet">
     <link href="../lib/dc/dc.css" rel="stylesheet">
     <link href="../styles/brush.css" rel="stylesheet">
 
-    <script src="../lib/d3.v3.min.js"></script>
+    <script src="../lib/d3.v3.min.js" charset="utf-8"></script>
     <!--<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>-->
     <script src="../lib/d3.layout.cloud.js"></script>
     <script src="../lib/jquery.min.js"></script>
@@ -54,6 +56,8 @@
                         <!--<li><a href="myCloud.html">myCloud</a></li>-->
                         <!--<li><a href="../lib/eg/index.html">brush</a></li>-->
                         <li class="active"><a href="Brush.html">Brush</a></li>
+                        <!--<li><a href="lineBrush.html">lineBrush</a></li>-->
+                        <li><a href="../lib/eg/multi_series line chart.html">line</a></li>
                     </ul>
                     <!--<form class="navbar-form navbar-left" role="search">-->
                     <!--<div class="form-group">-->
@@ -91,12 +95,12 @@
             <h3>
                 Bursh View
             </h3>
-            <p>本页面实现了一下几个功能：</p>
-            <p>1、以circle的形式显示所有聚类结果，移动到circle上可以显示具体序列信息和类别（tooltip功能）</p>
-            <p>   2、选中节点：点击选中单个，按住shift键用brush选择区域节点。</p>
-            <p>  3、点击get selection按钮，选中的类的信息会显示在右侧。支持多选。点击clear selection按钮则类信息清空。</p>
-            <p>4、legend功能：点击类别显示该类下所有节点。点击结果图可以取消选中</p>
-            <p> 5、zoom功能</p>
+            <p>��ҳ��ʵ����һ�¼������ܣ�</p>
+            <p>1����circle����ʽ��ʾ���о��������ƶ���circle�Ͽ�����ʾ����������Ϣ�����tooltip���ܣ�</p>
+            <p>   2��ѡ�нڵ㣺���ѡ�е�������סshift����brushѡ������ڵ㡣</p>
+            <p>  3�����get selection��ť��ѡ�е������Ϣ����ʾ���Ҳࡣ֧�ֶ�ѡ�����clear selection��ť������Ϣ��ա�</p>
+            <p>4��legend���ܣ���������ʾ���������нڵ㡣������ͼ����ȡ��ѡ��</p>
+            <p> 5��zoom����</p>
             <br />
             <button type="button" class="btn btn-info" onclick="get_selection();">Get Selection</button>
             <button type="button" class="btn btn-info" onclick="clear_selection();">Clear Selection</button>
