@@ -16,7 +16,7 @@ var y = d3.scale.linear()
     .range([height, 0]);
 
 var color = d3.scale.category20();
-console.log(color);
+// console.log(color);
 // var a =d3.rgb(255,0,0);
 // var b =d3.rgb(0,255,255);
 // var color1 = d3.interpolate(a,b);
@@ -137,11 +137,13 @@ d3.json("../data/names3.json",function (res) {
 // //y轴label
 //     svg.append("g")
 //         .attr("class", "y axis")
+//         .attr("transform", "translate(0,0)")
 //         .call(yAxis)
 //         .append("text")
 //         .attr("class", "label")
 //         .attr("transform", "rotate(-90)")
-//         .attr("y", 16)
+//         // .attr('x',20)
+//         .attr("y", -16)
 //         .attr("dy", ".71em")
 //         .style("text-anchor", "end")
 //         .text("Y axis");
@@ -190,7 +192,7 @@ d3.json("../data/names3.json",function (res) {
             return;
         }
         console.log('zoom');
-        node.attr("cx", function(d) { return x(d.OutputX*size[0]); })
+        node.attr("cx", function(d) { return x(d.OutputX*size[0]); })//修改成rect的时候需要修改cx-》x,cy->y;
             .attr("cy", function(d) { return y(d.OutputY*size[1]); });
         d3.select('.x.axis').call(xAxis);
         d3.select('.y.axis').call(yAxis);
@@ -204,11 +206,20 @@ d3.json("../data/names3.json",function (res) {
 
     node = svg.selectAll(".dot")
         .data(res)
+        // .enter().append("rect")
         .enter().append("circle")
         .attr("class", "dot")
         .attr("r", function(d) { return d.selected ? 5 : 6; })
         .attr("cx", function(d) { return x(d.OutputX*size[0]); })
         .attr("cy", function(d) { return y(d.OutputY*size[1]); })
+        // .attr("x", `function(d) {
+        //     //console.log(d);
+        //     return x(d.OutputX*size[0]); })
+        // .attr("y", function(d) { return y(d.OutputY*size[1]); })
+        // .attr('width',function (d) {
+        //     return d.rects.length*5;
+        // })
+        // .attr('height',5)
         // .style("fill", function(d) { return color1(linear(d.belong));})
         .style("fill", function(d) { return color(d.belong);})
         .on("mousedown", function(d) {
@@ -222,6 +233,15 @@ d3.json("../data/names3.json",function (res) {
             }
         })
         ;
+    //将circle换成矩形做的尝试
+    group = svg.selectAll('.rects')
+        .data(res)
+        .enter().append('g');
+    
+    group.attr('class','rects')
+        .attr('x',function (d) {
+            // console.log(d);
+        });
 
     node.classed('selected', function (d) {
         return d.selected;});
@@ -238,51 +258,22 @@ d3.json("../data/names3.json",function (res) {
          （2）通过更改样式 left 和 top 来设定提示框的位置
          （3）设定提示框的透明度为1.0（完全不透明）
          */
-        console.log(d);
+        // console.log(d);
         tooltip.html('list:'+d.list+'<br />'+'belong:'+d.belong)
-            .style("left", (d3.event.pageX)-380 + "px")
-            .style("top", (d3.event.pageY)-20 + "px")
+            .style("left", (d3.event.pageX)-150 + "px")
+            .style("top", (d3.event.pageY) + "px")
             .style("opacity",1.0);
     })
         .on("mousemove",function(d){
             /* 鼠标移动时，更改样式 left 和 top 来改变提示框的位置 */
 
-            tooltip.style("left", (d3.event.pageX)-380 + "px")
-                .style("top", (d3.event.pageY)-20 + "px");
+            tooltip.style("left", (d3.event.pageX)-150 + "px")
+                .style("top", (d3.event.pageY) + "px");
         })
         .on("mouseout",function(d){
             /* 鼠标移出时，将透明度设定为0.0（完全透明）*/
             tooltip.style("opacity",0.0);
         });
-
-function drawLegend(data) {
-    var legend = svg.selectAll(".legend")
-    // .data(color.domain())
-        .data(lis)
-        .enter().append("g")
-        .attr("class", "legend")
-        .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
-    console.log(color.domain());
-    console.log(selection);
-    legend.append("rect")
-        .attr("x", width +10)
-        .attr("width", 18)
-        .attr("height", 18)
-        .style("fill", color);
-
-    legend.append("text")
-        .attr("x", width +44)
-        .attr("y", 9)
-        .attr("dy", ".35em")
-        .style("text-anchor", "end")
-        .text(function(d) { return d[1]; });
-
-    legend.on('click',function (d,data) {
-        console.log(d);
-        console.log(data[0]);
-    })
-
-}
 
     d3.select(window).on("keydown", function() {
         shiftKey = d3.event.shiftKey;
