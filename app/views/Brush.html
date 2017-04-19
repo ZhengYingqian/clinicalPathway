@@ -7,6 +7,7 @@
     <link href="../styles/bootstrap.min.css" rel="stylesheet">
     <link href="../lib/dc/dc.css" rel="stylesheet">
     <link href="../styles/brush.css" rel="stylesheet">
+    <link href="../styles/line.css" rel="stylesheet">
 
     <script src="../lib/d3.v3.min.js" charset="utf-8"></script>
     <!--<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>-->
@@ -104,16 +105,18 @@
             <br />
             <button type="button" class="btn btn-info" onclick="get_selection();">Get Selection</button>
             <button type="button" class="btn btn-info" onclick="clear_selection();">Clear Selection</button>
+            <button type="button" class="btn btn-info" onclick="drawLine();"> line graph of Selection</button>
             <!--<button type="button" class="btn btn-info pull-right" onclick=" showSelected();">Show all Selected</button>-->
             <span class="pull-right">click to show clusters</span>
             <br />
             <br />
             <div class="Brush"></div>
+            <div class="line"></div>
         </div>
     </div>
 </div>
 <script src="../js/brush.js"></script>
-<!--<script src="../js/layout.js"></script>-->
+<script src="../js/line.js"></script>
 <!--<script src="../js/Uncluttered.js"></script>-->
 <!--<script src="../js/on.js"></script>-->
 </body>

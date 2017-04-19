@@ -101,6 +101,7 @@ function showSelected(belong) {
 function clear_selection() {
     node.classed('selected', function (d) { return d.selected = false; });
     svg.selectAll('.legend').remove();
+    d3.select('.line').remove();
     lis = [];
 }
 
@@ -194,8 +195,8 @@ d3.json("../data/names3.json",function (res) {
         console.log('zoom');
         node.attr("cx", function(d) { return x(d.OutputX*size[0]); })//修改成rect的时候需要修改cx-》x,cy->y;
             .attr("cy", function(d) { return y(d.OutputY*size[1]); });
-        d3.select('.x.axis').call(xAxis);
-        d3.select('.y.axis').call(yAxis);
+        d3.select('.x.axis .Brush').call(xAxis);
+        d3.select('.y.axis .Brush').call(yAxis);
     }
 
     rect = svg.append('rect')
@@ -295,49 +296,9 @@ d3.json("../data/names3.json",function (res) {
 
 });
 
-
-
-
-function getLayout2(data,size,widthScale,maxLen) {
-    var spiral = rectangularSpiral(size);
-
-    var groupNum = Math.min(data.length,maxLen),
-        outputRects = [],
-        spiralInt = 0,
-        spiralStep = [1,1],
-        padding = 1,
-        numMax = data[0].num,
-        k=64,
-        clusters,plists,group,i,j,isConflicting,t=0,bound,bounds=[];
-
-    [clusters,plists]=kMeans1(data,k,size);
-    console.log(clusters);
-    console.log(plists);
-    for (i=0;i<k&&t<groupNum ;i++){
-        idx = clusters[i].belong;
-        spiralInt = clusters[i].pos;
-        //  console.log(spiralInt);
-        var items=plists[idx],test=0;
-        //console.log(items);
-        if(items.length>0){
-            for(j=0,num=items.length;j<num;j++){
-                group = findId(items[j][0],data,size);
-                group.rectLength= (widthScale[1] - widthScale[0])*group.Pik + widthScale[0];
-                rectsLength = group.rects.length;//矩形数量
-                do {
-                    bound = getBound(spiral(spiralInt), group.rectLength, rectsLength);
-                    isConflicting = judgeBound(bound, bounds, padding);
-                    spiralInt += spiralStep;
-                    test++;
-                }while (isConflicting && test < 10000);
-                bounds.push(bound);
-                maxSize=pushGroupRects(group, bound,outputRects,maxSize);
-                t++;
-            }
-        }
-        console.log()
-    }
-
+function drawLine() {
+    console.log(selection);
+    lineUp(selection);
 }
 //两个数组想加的函数
 function arradd(a,b) {
