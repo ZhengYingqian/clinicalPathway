@@ -29,9 +29,12 @@ app.controller("ngCtl", [ '$scope', function($scope) {
                 return b.s - a.s; //按照由大到小排序
             });
 
+            var count = 0;
             selection = res.filter(function (d, i) {
-                if (d.rects.length > 3 && i < num)
+                if (d.rects.length > 3 && count < num){
+                    count++;
                     return d;
+                }
             });
 
             var plists = getLists(selection,res);
