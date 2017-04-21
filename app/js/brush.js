@@ -195,8 +195,8 @@ d3.json("../data/names3.json",function (res) {
         console.log('zoom');
         node.attr("cx", function(d) { return x(d.OutputX*size[0]); })//修改成rect的时候需要修改cx-》x,cy->y;
             .attr("cy", function(d) { return y(d.OutputY*size[1]); });
-        d3.select('.x.axis .Brush').call(xAxis);
-        d3.select('.y.axis .Brush').call(yAxis);
+        d3.select('.x.axis').call(xAxis);
+        d3.select('.y.axis').call(yAxis);
     }
 
     rect = svg.append('rect')
@@ -296,10 +296,6 @@ d3.json("../data/names3.json",function (res) {
 
 });
 
-function drawLine() {
-    console.log(selection);
-    lineUp(selection);
-}
 //两个数组想加的函数
 function arradd(a,b) {
     var c = [];

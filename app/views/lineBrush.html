@@ -1,42 +1,29 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Brush Example</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>line+Brush Example</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=gb2312">
 
     <link href="../styles/bootstrap.min.css" rel="stylesheet">
     <link href="../lib/dc/dc.css" rel="stylesheet">
-    <link href="../styles/brush.css" rel="stylesheet">
     <link href="../styles/line.css" rel="stylesheet">
+    <link href="../styles/brush.css" rel="stylesheet">
+
+    <!--<link href="../lib/eg/stylesheet.css" rel="stylesheet">-->
 
     <script src="../lib/d3.v3.min.js" charset="utf-8"></script>
-    <!--<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>-->
+    <script src="../lib/angular/angular.js" charset="utf-8"></script>
     <script src="../lib/d3.layout.cloud.js"></script>
     <script src="../lib/jquery.min.js"></script>
     <script src="../lib/bootstrap.min.js"></script>
     <script src="../lib/crossfilter.js"></script>
     <script src="../lib/dc/dc.js"></script>
+
+    <!--<script src="../lib/eg/jquery.tipsy.js"></script>-->
+    <!--<script src="../js/Uncluttered.js"></script>-->
+    <!--<script src="../js/layout.js"></script>-->
 </head>
-<style>
-    body {
-        font-family:"Lucida Grande","Droid Sans",Arial,Helvetica,sans-serif;
-    }
-    /*rect {*/
-        /*stroke: black;*/
-        /*stroke-width: 0.1;*/
-    /*}*/
-    .legend {
-        border: 1px solid #555555;
-        border-radius: 5px 5px 5px 5px;
-        font-size: 0.8em;
-        margin: 10px;
-        padding: 8px;
-    }
-    .bld {
-        font-weight: bold;
-    }
-</style>
-<body>
+<body ng-app="app">
 
 <div class="container">
     <div class="row clearfix">
@@ -56,9 +43,8 @@
                         </li>
                         <!--<li><a href="myCloud.html">myCloud</a></li>-->
                         <!--<li><a href="../lib/eg/index.html">brush</a></li>-->
-                        <li class="active"><a href="Brush.html">Brush</a></li>
-                        <!--<li><a href="lineBrush.html">lineBrush</a></li>-->
-                        <li><a href="lineBrush.html">line</a></li>
+                        <li><a href="Brush.html">Brush</a></li>
+                        <!--<li class="active"><a href="../lib/eg/MultiLineChart_D3.html">line</a></li>-->
                     </ul>
                     <!--<form class="navbar-form navbar-left" role="search">-->
                     <!--<div class="form-group">-->
@@ -94,29 +80,36 @@
 
         <div class="col-md-12 column">
             <h3>
-                Bursh View
+                Line + Brush View
             </h3>
-            <p>本页面实现了一下几个功能：</p>
-            <p>1、以circle的形式显示所有聚类结果，移动到circle上可以显示具体序列信息和类别（tooltip功能）</p>
-            <p>   2、选中节点：点击选中单个，按住shift键用brush选择区域节点。</p>
-            <p>  3、点击get selection按钮，选中的类的信息会显示在右侧。支持多选。点击clear selection按钮则类信息清空。</p>
-            <p>4、legend功能：点击类别显示该类下所有节点。点击结果图可以取消选中</p>
-            <p> 5、zoom功能</p>
-            <br />
-            <button type="button" class="btn btn-info" onclick="get_selection();">Get Selection</button>
-            <button type="button" class="btn btn-info" onclick="clear_selection();">Clear Selection</button>
-            <!--<button type="button" class="btn btn-info" onclick="drawLine();"> line graph of Selection</button>-->
-            <!--<button type="button" class="btn btn-info pull-right" onclick=" showSelected();">Show all Selected</button>-->
-            <span class="pull-right">click to show clusters</span>
-            <br />
-            <br />
-            <div class="Brush"></div>
+            <p>��ҳ��ʵ����һ�¼������ܣ�</p>
+            <p>1����ʾline�Ľ������ʾ��𣬲��Ҿ߱�ѡ����ʾ�ض����Ĺ���</p>
+            <p>2������brush�Ĺ���</p>
+            <p>3����ѡ�е����ݣ����ӹ�����Ϣ��</p>
+            <!--<div class="line" ng-controller="lineBrushCtrl">-->
+
+            <!--</div>-->
+            <!--<div id="menu" class="menuchoice">Select series:-->
+                <!--<select ng-model="data" ng-options="value for (value,arr) in nested" ng-change ='change(data)'>-->
+
+                    <!--<option value="value" ng-bind="value"></option>-->
+                <!--<option value="val2">Value 2</option>-->
+                <!--<option value="val3">Value 3</option>-->
+                <!--<option value="val4">Value 4</option>-->
+                <!--</select><h1>{{data[0]}}</h1></div>-->
+            <div ng-controller="ngCtl">
+            <!--<div id="graphic"  ng-controller="lineBrushCtrl">-->
+            <form name="info">
+                <input type="number" ng-model="lineN" placeholder="line number">
+                <input type="submit" value="Submit" ng-click="changeLineN(lineN)">
+            </form>
+
             <div class="line"></div>
+            </div>
         </div>
     </div>
 </div>
-<script src="../js/brush.js"></script>
+
+<!--<script src="../js/lineBrush.js"></script>-->
 <script src="../js/line.js"></script>
-<!--<script src="../js/Uncluttered.js"></script>-->
-<!--<script src="../js/on.js"></script>-->
 </body>
