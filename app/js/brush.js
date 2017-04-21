@@ -235,14 +235,14 @@ d3.json("../data/names3.json",function (res) {
         })
         ;
     //将circle换成矩形做的尝试
-    group = svg.selectAll('.rects')
-        .data(res)
-        .enter().append('g');
-    
-    group.attr('class','rects')
-        .attr('x',function (d) {
-            // console.log(d);
-        });
+    // group = svg.selectAll('.rects')
+    //     .data(res)
+    //     .enter().append('g');
+    //
+    // group.attr('class','rects')
+    //     .attr('x',function (d) {
+    //         // console.log(d);
+    //     });
 
     node.classed('selected', function (d) {
         return d.selected;});

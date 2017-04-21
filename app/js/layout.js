@@ -74,8 +74,8 @@ function pushGroupRects(group, bound, outputRects,maxSize) {
 function findId(id,data,size) {
     for( var i=0;i<data.length;i++){
         if(id ===data[i].groupId){
-            data[i].OutputX*=size[0];
-            data[i].OutputY*=size[1];
+            // data[i].OutputX*=size[0];
+            // data[i].OutputY*=size[1];
             return data[i];
         }
     }

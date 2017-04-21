@@ -1,29 +1,39 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>line+Brush Example</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-
+    <title>Brush Example</title>
     <link href="../styles/bootstrap.min.css" rel="stylesheet">
     <link href="../lib/dc/dc.css" rel="stylesheet">
-    <link href="../styles/line.css" rel="stylesheet">
     <link href="../styles/brush.css" rel="stylesheet">
 
-    <!--<link href="../lib/eg/stylesheet.css" rel="stylesheet">-->
-
     <script src="../lib/d3.v3.min.js" charset="utf-8"></script>
-    <script src="../lib/angular/angular.js" charset="utf-8"></script>
+    <!--<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>-->
     <script src="../lib/d3.layout.cloud.js"></script>
     <script src="../lib/jquery.min.js"></script>
     <script src="../lib/bootstrap.min.js"></script>
     <script src="../lib/crossfilter.js"></script>
     <script src="../lib/dc/dc.js"></script>
-
-    <!--<script src="../lib/eg/jquery.tipsy.js"></script>-->
-    <!--<script src="../js/Uncluttered.js"></script>-->
-    <!--<script src="../js/layout.js"></script>-->
 </head>
-<body ng-app="app">
+<style>
+    body {
+        font-family:"Lucida Grande","Droid Sans",Arial,Helvetica,sans-serif;
+    }
+    /*rect {*/
+    /*stroke: black;*/
+    /*stroke-width: 0.1;*/
+    /*}*/
+    .legend {
+        border: 1px solid #555555;
+        border-radius: 5px 5px 5px 5px;
+        font-size: 0.8em;
+        margin: 10px;
+        padding: 8px;
+    }
+    .bld {
+        font-weight: bold;
+    }
+</style>
+<body ng-app = 'ctrlApp'>
 
 <div class="container">
     <div class="row clearfix">
@@ -44,7 +54,7 @@
                         <!--<li><a href="myCloud.html">myCloud</a></li>-->
                         <!--<li><a href="../lib/eg/index.html">brush</a></li>-->
                         <li><a href="Brush.html">Brush</a></li>
-                        <!--<li class="active"><a href="../lib/eg/MultiLineChart_D3.html">line</a></li>-->
+                        <li class="active"><a href="intergrated.html">intergrated view</a></li>
                     </ul>
                     <!--<form class="navbar-form navbar-left" role="search">-->
                     <!--<div class="form-group">-->
@@ -78,39 +88,9 @@
     </div>
     <div class="row clearfix">
 
-        <div class="col-md-12 column">
-            <h3>
-                Line + Brush View
-            </h3>
-            <p>本页面实现了一下几个功能：</p>
-            <p>1、显示line的结果，显示类别，并且具备选择显示特定类别的功能</p>
-            <p>2、添加brush的功能</p>
-            <p>3、对选中的内容，添加过滤信息。</p>
-            <!--<div class="line" ng-controller="lineBrushCtrl">-->
-
-            <!--</div>-->
-            <!--<div id="menu" class="menuchoice">Select series:-->
-                <!--<select ng-model="data" ng-options="value for (value,arr) in nested" ng-change ='change(data)'>-->
-
-                    <!--<option value="value" ng-bind="value"></option>-->
-                <!--<option value="val2">Value 2</option>-->
-                <!--<option value="val3">Value 3</option>-->
-                <!--<option value="val4">Value 4</option>-->
-                <!--</select><h1>{{data[0]}}</h1></div>-->
-            <div ng-controller="ngCtl">
-            <!--<div id="graphic"  ng-controller="lineBrushCtrl">-->
-            <form name="info">
-                <input type="number" ng-model="lineN" placeholder="line number">
-                <input type="submit" value="Submit" ng-click="changeLineN(lineN)">
-            </form>
-
-                <div class="line"></div>
-                <div id="graphic"></div>
-            </div>
+        <div class="col-md-12 column" >
         </div>
     </div>
 </div>
-
-<!--<script src="../js/lineBrush.js"></script>-->
-<script src="../js/line.js"></script>
 </body>
+</html>

@@ -1,28 +1,8 @@
-<!DOCTYPE html>
-<meta charset="utf-8">
-<body>
-<link href="stylesheet.css" rel="stylesheet" type="text/css">
-<script src="../d3.v3.min.js"></script>
-<script src="../jquery.min.js" charset="utf-8"></script>
-<script type="text/javascript" src="jquery.tipsy.js"></script>
-
-<div id="container">
-    <p id="headline" class="hed">Headline</p>
-    <p class="dek">dek</p>
-    <p class="dek">dek </p>
-</div>
-
-<p id="menu" class="menuchoice">Select series: <select>
-    <option value="val1">Value 1</option>
-    <option value="val2">Value 2</option>
-    <option value="val3">Value 3</option>
-    <option value="val4">Value 4</option>
-</select>
-
-<div id="graphic"> </div>
-
-
-<script>
+/**
+ * Created by yqzheng on 2017/4/18.
+ */
+angular.module('app',[]).controller("ngCtl", [ '$scope', function($scope) {
+    var self = this;
 
     //set the margins
     var margin = {top: 50, right: 160, bottom: 80, left: 50},
@@ -30,10 +10,10 @@
         height = 500 - margin.top - margin.bottom;
 
     //set dek and head to be as wide as SVG
-    d3.select('#dek')
-        .style('width', width+'px');
-    d3.select('#headline')
-        .style('width',width+'px');
+    // d3.select('#dek')
+    //     .style('width', width+'px');
+    // d3.select('#headline')
+    //     .style('width',width+'px');
 
     //write out your source text here
 //    var sourcetext= "Source: XXXXX";
@@ -53,7 +33,7 @@
     //defines a function to be used to append the title to the tooltip.  you can set how you want it to display here.
     var maketip = function (d) {
         var tip = '<p class="tip3">' + d.name + '<p class="tip1">' + NumbType(d.value) + '</p> <p class="tip3">'+  formatDate(d.date)+'</p>';
-        return tip;}
+        return tip;};
 
     //define your year format here, first for the x scale, then if the date is displayed in tooltips
     var parseDate = d3.time.format("%m/%d/%y").parse;
@@ -86,10 +66,36 @@
         .on("change", change);
 
     //suck in the data, store it in a value called formatted, run the redraw function
-    d3.csv("data.csv", function(data) {
-        console.log(data);
-        formatted = data;
-        redraw();
+    // d3.csv("../lib/eg/data.csv", function(data) {
+    d3.json("../data/names3.json", function (data) {
+        // console.log(res.length);
+
+        data.forEach(function (d) {
+            d.s = d.Pik * d.p;
+            d.belong += 1;
+        });
+        data.sort(function (a, b) {
+            return b.s - a.s; //按照由大到小排序
+        });
+        // self.data = data;
+        // var size = [1000, 1000],k=64,
+        //     clusters, plists;
+        formatted=data;
+
+        var nested = d3.nest()
+            .key(function(d) {
+                return 'value'+d.belong; })
+            .map(formatted);
+        console.log(nested);
+        // get value from menu selection
+        // the option values are set in HTML and correspond
+        //to the [type] value we used to nest the data
+        self.nested = nested;
+        // var series = menu.property("value");
+        // var series = value;
+
+    // formatted = data;
+    //     redraw(nested.value1);
     });
 
     d3.select(window)
@@ -99,75 +105,76 @@
 
     // set terms of transition that will take place
     // when a new economic indicator is chosen
-    function change() {
-        d3.transition()
-            .duration(altKey ? 7500 : 1500)
-            .each(redraw);
-    }
-
-    // all the meat goes in the redraw function
-    function redraw() {
+    function change(data) {
 
         // create data nests based on economic indicator (series)
-        var nested = d3.nest()
-            .key(function(d) { return d.type; })
-            .map(formatted);
-        console.log(nested);
-        // get value from menu selection
-        // the option values are set in HTML and correspond
-        //to the [type] value we used to nest the data
-        var series = menu.property("value");
+        d3.transition()
+            .duration(altKey ? 7500 : 1500)
+            .each(redraw(data));
+    }
+
+
+    // all the meat goes in the redraw function
+    function redraw(data) {
+
 
         // only retrieve data from the selected series, using the nest we just created
-        var data = nested[series];
+        // var data = nested.value;
         console.log(data);
         // for object constancy we will need to set "keys", one for each type of data (column name) exclude all others.
-        color.domain(d3.keys(data[0]).filter(function(key) {
+        color.domain(d3.keys(data[0]).filter(function (key) {
             console.log(key);
             return (key !== "date" && key !== "type"); }));
 
-        var linedata = color.domain().map(function(name) {
-            console.log(name);
-            return {name: name,
-                values: data.map(function(d) {
-                    return {name:name, date: parseDate(d.date), value: parseFloat(d[name],10)};
-                })
-            };
-        });
 
-        console.log(linedata);
         //make an empty variable to stash the last values into so i can sort the legend
-        var lastvalues=[];
-        console.log(linedata);
+        var lastvalues = [];
+
         //setup the x and y scales
         var x = d3.time.scale()
             .domain([
-                d3.min(linedata, function(c) {
-                    console.log(c);
-                    return d3.min(c.values, function(v) { return v.date; }); }),
-                d3.max(linedata, function(c) { return d3.max(c.values, function(v) { return v.date; }); })
+                d3.min(linedata, function (c) {
+                    return d3.min(c.values, function (v) {
+                        return v.date;
+                    });
+                }),
+                d3.max(linedata, function (c) {
+                    return d3.max(c.values, function (v) {
+                        return v.date;
+                    });
+                })
             ])
             .range([0, width]);
 
         var y = d3.scale.linear()
             .domain([
-                d3.min(linedata, function(c) { return d3.min(c.values, function(v) { return v.value; }); }),
-                d3.max(linedata, function(c) { return d3.max(c.values, function(v) { return v.value; }); })
+                d3.min(linedata, function (c) {
+                    return d3.min(c.values, function (v) {
+                        return v.value;
+                    });
+                }),
+                d3.max(linedata, function (c) {
+                    return d3.max(c.values, function (v) {
+                        return v.value;
+                    });
+                })
             ])
             .range([height, 0]);
 
         //will draw the line
         var line = d3.svg.line()
-            .x(function(d) {
-//                console.log(d);//Object {name: "Line 1", date: Thu Jan 01 2009 00:00:00 GMT+0800 (中国标准时间), value: 8.195}
-                return x(d.date); })
-            .y(function(d) { return y(d.value); });
+            .x(function (d) {
+                return x(d.date);
+            })
+            .y(function (d) {
+                return y(d.value);
+            });
 
         //define the zoom
         var zoom = d3.behavior.zoom()
             .x(x)
             .y(y)
-            .scaleExtent([1,8])
+            .scaleExtent([1, 8])
             .on("zoom", zoomed);
 
         //call the zoom on the SVG
@@ -187,7 +194,7 @@
         var yAxis = d3.svg.axis()
             .scale(y)
             .orient("left")
-            .tickSize(0-width)
+            .tickSize(0 - width)
             .tickPadding(8);
 
         svg.append("svg:g")
@@ -198,42 +205,44 @@
             .data(linedata);
 
         //append a g tag for each line and set of tooltip circles and give it a unique ID based on the column name of the data
-        var thegraphEnter=thegraph.enter().append("g")
+        var thegraphEnter = thegraph.enter().append("g")
             .attr("clip-path", "url(#clip)")
             .attr("class", "thegraph")
-            .attr('id',function(d){ return d.name+"-line"; })
-            .style("stroke-width",2.5)
+            .attr('id', function (d) {
+                return d.belong + "-line";
+            })
+            .style("stroke-width", 2.5)
             .on("mouseover", function (d) {
                 d3.select(this)                          //on mouseover of each line, give it a nice thick stroke
-                    .style("stroke-width",'6px');
+                    .style("stroke-width", '6px');
 
                 var selectthegraphs = $('.thegraph').not(this);     //select all the rest of the lines, except the one you are hovering on and drop their opacity
                 d3.selectAll(selectthegraphs)
-                    .style("opacity",0.2);
+                    .style("opacity", 0.2);
 
-                var getname = document.getElementById(d.name);    //use get element cause the ID names have spaces in them
+                var getname = document.getElementById(d.belong);    //use get element cause the ID names have spaces in them
                 var selectlegend = $('.legend').not(getname);    //grab all the legend items that match the line you are on, except the one you are hovering on
 
                 d3.selectAll(selectlegend)    // drop opacity on other legend names
-                    .style("opacity",.2);
+                    .style("opacity", .2);
 
                 d3.select(getname)
                     .attr("class", "legend-select");  //change the class on the legend name that corresponds to hovered line to be bolder
             })
-            .on("mouseout",	function(d) {        //undo everything on the mouseout
+            .on("mouseout", function (d) {        //undo everything on the mouseout
                 d3.select(this)
-                    .style("stroke-width",'2.5px');
+                    .style("stroke-width", '2.5px');
 
                 var selectthegraphs = $('.thegraph').not(this);
                 d3.selectAll(selectthegraphs)
-                    .style("opacity",1);
+                    .style("opacity", 1);
 
                 var getname = document.getElementById(d.name);
-                var getname2= $('.legend[fakeclass="fakelegend"]');
+                var getname2 = $('.legend[fakeclass="fakelegend"]');
                 var selectlegend = $('.legend').not(getname2).not(getname);
 
                 d3.selectAll(selectlegend)
-                    .style("opacity",1);
+                    .style("opacity", 1);
 
                 d3.select(getname)
                     .attr("class", "legend");
@@ -242,120 +251,149 @@
         //actually append the line to the graph
         thegraphEnter.append("path")
             .attr("class", "line")
-            .style("stroke", function(d) { return color(d.name); })
-            .attr("d", function(d) { return line(d.values[0]); })
+            .style("stroke", function (d) {
+                return color(d.belong);
+            })
+            .attr("d", function (d) {
+                return line(d.values[0]);
+            })
             .transition()
             .duration(2000)
-            .attrTween('d',function (d){
+            .attrTween('d', function (d) {
                 var interpolate = d3.scale.quantile()
-                    .domain([0,1])
-                    .range(d3.range(1, d.values.length+1));
-                return function(t){
+                    .domain([0, 1])
+                    .range(d3.range(1, d.values.length + 1));
+                return function (t) {
                     return line(d.values.slice(0, interpolate(t)));
                 };
             });
 
         //then append some 'nearly' invisible circles at each data point
         thegraph.selectAll("circle")
-            .data( function(d) {return(d.values);} )
+            .data(function (d) {
+                return (d.values);
+            })
             .enter()
             .append("circle")
-            .attr("class","tipcircle")
-            .attr("cx", function(d,i){return x(d.date)})
-            .attr("cy",function(d,i){return y(d.value)})
-            .attr("r",12)
+            .attr("class", "tipcircle")
+            .attr("cx", function (d, i) {
+                return x(d.date)
+            })
+            .attr("cy", function (d, i) {
+                return y(d.value)
+            })
+            .attr("r", 12)
             .style('opacity', 1e-6)//1e-6
-            .attr ("title", maketip);
+            .attr("title", maketip);
 
         //append the legend
         var legend = svg.selectAll('.legend')
             .data(linedata);
 
-        var legendEnter=legend
+        var legendEnter = legend
             .enter()
             .append('g')
             .attr('class', 'legend')
-            .attr('id',function(d){ return d.name; })
+            .attr('id', function (d) {
+                return d.name;
+            })
             .on('click', function (d) {                           //onclick function to toggle off the lines
-                if($(this).css("opacity") == 1){				  //uses the opacity of the item clicked on to determine whether to turn the line on or off
+                if ($(this).css("opacity") == 1) {				  //uses the opacity of the item clicked on to determine whether to turn the line on or off
 
-                    var elemented = document.getElementById(this.id +"-line");   //grab the line that has the same ID as this point along w/ "-line"  use get element cause ID has spaces
+                    var elemented = document.getElementById(this.id + "-line");   //grab the line that has the same ID as this point along w/ "-line"  use get element cause ID has spaces
                     d3.select(elemented)
                         .transition()
                         .duration(1000)
-                        .style("opacity",0)
-                        .style("display",'none');
+                        .style("opacity", 0)
+                        .style("display", 'none');
 
                     d3.select(this)
                         .attr('fakeclass', 'fakelegend')
                         .transition()
                         .duration(1000)
-                        .style ("opacity", .2);
+                        .style("opacity", .2);
                 } else {
 
-                    var elemented = document.getElementById(this.id +"-line");
+                    var elemented = document.getElementById(this.id + "-line");
                     d3.select(elemented)
                         .style("display", "block")
                         .transition()
                         .duration(1000)
-                        .style("opacity",1);
+                        .style("opacity", 1);
 
                     d3.select(this)
-                        .attr('fakeclass','legend')
+                        .attr('fakeclass', 'legend')
                         .transition()
                         .duration(1000)
-                        .style ("opacity", 1);}
+                        .style("opacity", 1);
+                }
             });
 
         //create a scale to pass the legend items through
-        var legendscale= d3.scale.ordinal()
+        var legendscale = d3.scale.ordinal()
             .domain(lastvalues)
-            .range([0,30,60,90,120,150,180,210]);
+            .range([0, 30, 60, 90, 120, 150, 180, 210]);
 
         //actually add the circles to the created legend container
         legendEnter.append('circle')
-            .attr('cx', width +20)
-            .attr('cy', function(d){return legendscale(d.values[d.values.length-1].value);})
+            .attr('cx', width + 20)
+            .attr('cy', function (d) {
+                return legendscale(d.values[d.values.length - 1].value);
+            })
             .attr('r', 7)
-            .style('fill', function(d) {
+            .style('fill', function (d) {
                 return color(d.name);
             });
 
         //add the legend text
         legendEnter.append('text')
-            .attr('x', width+35)
-            .attr('y', function(d){return legendscale(d.values[d.values.length-1].value);})
-            .text(function(d){ return d.name; });
+            .attr('x', width + 35)
+            .attr('y', function (d) {
+                return legendscale(d.values[d.values.length - 1].value);
+            })
+            .text(function (d) {
+                return d.name;
+            });
 
         // set variable for updating visualization
         var thegraphUpdate = d3.transition(thegraph);
 
         // change values of path and then the circles to those of the new series
         thegraphUpdate.select("path")
-            .attr("d", function(d, i) {
+            .attr("d", function (d, i) {
 
                 //must be a better place to put this, but this works for now
-                lastvalues[i]=d.values[d.values.length-1].value;
-                lastvalues.sort(function (a,b){return b-a});
+                lastvalues[i] = d.values[d.values.length - 1].value;
+                lastvalues.sort(function (a, b) {
+                    return b - a
+                });
                 legendscale.domain(lastvalues);
 
-                return line(d.values); });
+                return line(d.values);
+            });
 
         thegraphUpdate.selectAll("circle")
-            .attr ("title", maketip)
-            .attr("cy",function(d,i){return y(d.value)})
-            .attr("cx", function(d,i){return x(d.date)});
+            .attr("title", maketip)
+            .attr("cy", function (d, i) {
+                return y(d.value)
+            })
+            .attr("cx", function (d, i) {
+                return x(d.date)
+            });
 
 
         // and now for legend items
-        var legendUpdate=d3.transition(legend);
+        var legendUpdate = d3.transition(legend);
 
         legendUpdate.select("circle")
-            .attr('cy', function(d, i){
-                return legendscale(d.values[d.values.length-1].value);});
+            .attr('cy', function (d, i) {
+                return legendscale(d.values[d.values.length - 1].value);
+            });
 
         legendUpdate.select("text")
-            .attr('y',  function (d) {return legendscale(d.values[d.values.length-1].value);});
+            .attr('y', function (d) {
+                return legendscale(d.values[d.values.length - 1].value);
+            });
 
 
         // update the axes,
@@ -367,7 +405,7 @@
             .call(xAxis);
 
         //make my tooltips work
-        $('circle').tipsy({opacity:.9, gravity:'n', html:true});
+        $('circle').tipsy({opacity: .9, gravity: 'n', html: true});
 
 
         //define the zoom function
@@ -376,25 +414,48 @@
             svg.select(".y.axis").call(yAxis);
 
             svg.selectAll(".tipcircle")
-                .attr("cx", function(d,i){return x(d.date)})
-                .attr("cy",function(d,i){return y(d.value)});
+                .attr("cx", function (d, i) {
+                    return x(d.date)
+                })
+                .attr("cy", function (d, i) {
+                    return y(d.value)
+                });
 
             svg.selectAll(".line")
-                .attr("class","line")
-                .attr("d", function (d) { return line(d.values)});
+                .attr("class", "line")
+                .attr("d", function (d) {
+                    return line(d.values)
+                });
         }
 
-//end of the redraw function
+        // var lineselection = svg.selectAll('.lineselection')
+        //     .data(linedata)
+        //     .enter().append('line')
+        //     .attr()
+        // var brush = svg.append('g')
+        //     .datum(function (d) {
+        //         console.log(d);
+        //         return {selected: false};
+        //     })
+        //     .attr("class","brush")
+        //     .call(d3.svg.brush()
+        //         .x(d3.scale.identity().domain([0, width]))
+        //         .y(d3.scale.identity().domain([0, height]))
+        //         .on("brushstart", function(d) {
+        //             svg = svg.call(d3.behavior.zoom().on("zoom", null));
+        //             console.log('brushstart');
+        //
+        //             )
     }
-//
-//    svg.append("svg:text")
-//        .attr("text-anchor", "start")
-//        .attr ("x", 0-margin.left)
-//        .attr("y", height+margin.bottom-10)
-//        .text (sourcetext)
-//        .attr ("class","source");
-//
 
-
-</script>
-</body>
+}]);
+//
+// function drawLine() {
+//
+//     var svg = d3.select('.lineb').append('svg')
+//         .attr("width", width + margin.left + margin.right)
+//         .attr("height", height + margin.top + margin.bottom);
+//
+//     var lines = svg.append('rect')
+// }
+// drawLine();

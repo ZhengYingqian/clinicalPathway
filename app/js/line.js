@@ -42,6 +42,7 @@ app.controller("ngCtl", [ '$scope', function($scope) {
             console.log(selection);
 
             lineUp(selection);
+            redraw(selection);
         });
 
     }
@@ -81,14 +82,19 @@ function lineUp(selection) {
     var yAxis = d3.svg.axis().scale(y)
         .orient("left").ticks(10);
 
-    // var zoom = d3.behavior.zoom()
-    //     .x(x)
-    //     .y(y)
-    //     .scaleExtent([1, 10])
-    //     .on("zoom", zoomed);
+    var zoom = d3.behavior.zoom()
+        .x(x)
+        .y(y)
+        .scaleExtent([1, 10])
+        .on("zoom", function(){
+            console.log("zoom");
+            if(shiftKey == false)
+            zoomed();
+        });
     //
 // Adds the svg canvas
     var svg = d3.select(".line").append("svg")
+        .call(zoom)
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
         .append("g")
@@ -144,11 +150,11 @@ function lineUp(selection) {
         .attr("d", line);
 
     // Add the scatterplot
-    node = svg.selectAll(".dot")
+    node = svg.selectAll(".dots")
         .data(linedata)
         .enter()
         .append("g")
-        .attr("class", "dot")
+        .attr("class", "dots")
         .attr("clip-path", "url(#clip)");
 
     node.selectAll('.dot')
@@ -185,12 +191,18 @@ function lineUp(selection) {
         .call(yAxis);
 
     function zoomed() {
+        if (shiftKey) {
+            console.log('zoom shiftKey');
+            return;
+        }
+        console.log('start');
         svg.select(".x.axis").call(xAxis);
         svg.select(".y.axis").call(yAxis);
         svg.selectAll('path.line').attr('d', line);
 
-        points.selectAll('circle').attr("transform", function (d) {
-                return "translate(" + x(d.point.x) + "," + y(d.point.y) + ")";
+        node.selectAll('circle').attr("transform", function (d) {
+            console.log(d);
+                return "translate(" + x(d.point.id) + "," + y(d.point.type) + ")";
             }
         );
     }
@@ -200,12 +212,32 @@ function lineUp(selection) {
         .call(d3.svg.brush()
             .x(d3.scale.identity().domain([0, width]))
             .y(d3.scale.identity().domain([0, height]))
+            .on("brushstart", function(d) {
+                svg = svg.call(d3.behavior.zoom().on("zoom", null));
+                console.log('brushstart');
+                // line.each(function(d) { d.previouslySelected = shiftKey && d.selected });
+                if (!shiftKey) {
+                    d3.event.target.clear();
+                    d3.select(this).call(d3.event.target);
+                }
+            })
             .on("brush", function () {
-                var extent = d3.event.target.extent();
-                line.classed("selected", function (d) {
+                if(shiftKey){
+                    console.log('shiftKey', shiftKey);
+                    var extent = d3.event.target.extent();
+                    line.classed("selected", function (d) {
                     return d.selected = extent[0][0] <= d.id && d.id < extent[1][0]
                         && extent[0][1] <= d.type && d.type < extent[1][1];
                 });
+                } else {
+                    d3.event.target.clear();
+                    d3.select(this).call(d3.event.target);
+                }
+            })
+            .on("brushend", function() {
+                d3.event.target.clear();
+                d3.select(this).call(d3.event.target);
+                svg.call(d3.behavior.zoom().x(x).y(y).on("zoom", zoom));
             }));
 
     var shiftKey;

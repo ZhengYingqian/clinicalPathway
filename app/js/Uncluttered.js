@@ -4,7 +4,7 @@
 
 function getLayout1(data,size,widthScale,maxLen){
     var bounds = [],
-        spiral = rectangularSpiral(size),
+        spiral = archimedeanSpiral(size),
         groupNum = Math.min(data.length,maxLen),
         outputRects = [],
         spiralInt = 0,
@@ -18,13 +18,14 @@ function getLayout1(data,size,widthScale,maxLen){
     k=clusters.length;
     for (i=0;i<k&&t<groupNum ;i++){
         idx = clusters[i].belong;
-        spiralInt = clusters[i].pos[1];
-      //  console.log(spiralInt);
+        spiralInt = Math.sqrt((clusters[i].pos[1])^2+(clusters[i].pos[0])^2);
+     console.log(i,spiralInt);
         var items=plists[idx],test=0;
-        //console.log(items);
+     //   console.log(items);
         if(items.length>0){
             for(j=0,num=items.length;j<num;j++){
                 group = findId(items[j][0],data,size);
+                // console.log(group);
                 group.rectLength= (widthScale[1] - widthScale[0]) / numMax * group.num + widthScale[0];
                 rectsLength = group.rects.length;//矩形数量
                 do {
@@ -32,7 +33,7 @@ function getLayout1(data,size,widthScale,maxLen){
                     isConflicting = judgeBound(bound, bounds, padding);
                     spiralInt += spiralStep;
                     test++;
-                }while (isConflicting && test < 1000);
+                }while (spiralInt-clusters[i].pos[1] <100 &&isConflicting && test < 1000);
                 bounds.push(bound);
                 maxSize=pushGroupRects(group, bound,outputRects,maxSize);
                 t++;
@@ -75,7 +76,7 @@ function draw1(id,rects,maxSize,data) {
         });
 }
 
-var size = [20, 20],widthScale = [5, 20],showN=1000,x=0.1;
+var size = [1000, 1000],widthScale = [5, 20],showN=1000,x=0.1;
 
 d3.json("../data/names.json",function (res) {
     for(var i=0;i<res.length;i++){
@@ -320,16 +321,18 @@ function kMeans1(data,k,size){
        for (i = 0; i < clusters.length; i++) {
            //var old = clusters[i].pos;
            var key = clusters[i].belong,
-               list = plists[key],//keyç±»çš„æ‰€æœ‰ç‚¹çš„posé›†åˆ
+               list = plists[key],
                center = null;
-
-           if (list.length > 0) {
-               center = calculateCenter(plists[key], 2);
-           } else {
-               center = calculateCenter([clusters[i].pos[1]], 2);
+           // console.log(list);
+           if(typeof (list)!='undefined') {
+               if (list.length > 0) {
+                   center = calculateCenter(plists[key], 2);
+               } else {
+                   center = calculateCenter([clusters[i].pos[1]], 2);
+               }
+               //console.log(i,center);
+               clusters[i].pos = center;
            }
-           //console.log(i,center);
-           clusters[i].pos = center;
        }
        // wcss=0;
        // for (j = 0; j < plen; j++) {

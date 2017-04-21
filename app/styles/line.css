@@ -68,3 +68,7 @@ body {
     stroke: #fff;
     shape-rendering: crispEdges;
 }
+
+body {
+    font-family:"Lucida Grande","Droid Sans",Arial,Helvetica,sans-serif;
+}

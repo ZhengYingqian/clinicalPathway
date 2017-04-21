@@ -5639,7 +5639,7 @@
              * Set or get whether rounding is enabled when bars are centered. If false, using
              * rounding with centered bars will result in a warning and rounding will be ignored.  This flag
              * has no effect if bars are not {@link dc.barChart#centerBar centered}.
-             * When using standard d3.js rounding methods, the brush often doesn't align correctly with
+             * When using standard multi-line zoom.js rounding methods, the brush often doesn't align correctly with
              * centered bars since the bars are offset.  The rounding function must add an offset to
              * compensate, such as in the following example.
              * @method alwaysUseRounding
