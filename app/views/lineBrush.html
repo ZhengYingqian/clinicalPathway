@@ -102,14 +102,14 @@
             <form name="info">
                 <input type="number" ng-model="lineN" placeholder="line number">
 
-                <select ng-init="selectName = names[0]" ng-model="selectName" ng-options="x for x in names" ng-change="changeOption(selectName)"></select>
+                <select ng-init="selectName = names[0]" ng-model="selectName" ng-options="x for x in names"></select>
 
-                <input type="submit" value="Submit" ng-click="changeLineN(lineN)">
+                <input type="submit" value="Submit" ng-click="changeLine(lineN,selectName)">
                 <!--<input type="checkbox" ng-model="confirmed" ng-change="" /> {{comfirmed}}-->
             </form>
 
                 <div class="line"></div>
-                <div id="graphic">
+                <div class="graphic">
                     <!--<input type="number" ng-model="belongN" placeholder="line number">-->
                     <!--<input type="submit" value="Submit" ng-click="changeBelong(belongN)">-->
                 </div>
@@ -120,4 +120,5 @@
 
 <!--<script src="../js/lineBrush.js"></script>-->
 <script src="../js/line.js"></script>
+<script type="text/javascript" src="../lib/eg/jquery.tipsy.js"></script>
 </body>
