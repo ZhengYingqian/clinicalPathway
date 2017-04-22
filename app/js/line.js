@@ -10,10 +10,15 @@ app.controller("ngCtl", [ '$scope', function($scope) {
         d3.select('svg').remove();
         drawLine(lineM);
     };
-
-    $scope.lineBelong = function () {
-
+    $scope.names = ["zoom", "brush"];
+    $scope.changeOption = function (selectName) {
+        shiftKey = (selectName == 'brush');
+      console.log(selectName,shiftKey);
     };
+
+    // $scope.changeBelong =function(belongN){
+    //
+    // }
 
     function drawLine(num) {
         console.log('drawline' + num);
@@ -40,8 +45,7 @@ app.controller("ngCtl", [ '$scope', function($scope) {
             var plists = getLists(selection,res);
 
             console.log(selection);
-
-            lineUp(selection);
+            lineUp(selection,shiftKey);
             redraw(selection);
         });
 
@@ -59,7 +63,91 @@ function getLists(selection,data) {
     })
 }
 
-function lineUp(selection) {
+function redraw(selection) {
+    var margin = {top: 50, right: 160, bottom: 80, left: 50},
+        width = 900 - margin.left - margin.right,
+        height = 500 - margin.top - margin.bottom;
+
+    //color - d.belong;
+    var linedata=[];
+    selection.forEach(function (p) {
+        var temp = {};
+        temp.name = p.belong;
+        temp.values = p.rects;
+        linedata.push(temp);
+        // colorList.push(p.belong);
+    });
+    console.log(linedata);//[[{id:,type:}..]..]
+    // var colordic;
+    // var color = d3.scale.ordinal().range(colordic).domain(colorList);
+    var color = d3.scale.category20();
+
+    //create svg
+    var svg = d3.select('.graphic').append('svg')
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    var x = d3.time.scale()
+        .domain([
+            d3.min(linedata, function(c) {
+                console.log(c);
+                return d3.min(c.values, function(v) { return v.id; }); }),
+            d3.max(linedata, function(c) { return d3.max(c.values, function(v) { return v.id; }); })
+        ])
+        .range([0, width]);
+    var y = d3.scale.linear()
+        .domain([
+            d3.min(linedata, function(c) { return d3.min(c.values, function(v) { return v.type; }); }),
+            d3.max(linedata, function(c) { return d3.max(c.values, function(v) { return v.type; }); })
+        ])
+        .range([height, 0]);
+
+    var line = d3.svg.line()
+        .x(function (d) {
+            // console.log(d);
+            return x(d.id);})
+        .y(function (d) {
+            return y(d.type);
+        });
+
+    //define the approx. number of x scale ticks
+    // var xscaleticks = 5;
+
+    //create and draw the x axis
+    var xAxis = d3.svg.axis()
+        .scale(x)
+        .orient("bottom")
+        // .tickPadding(8)
+        // .ticks(xscaleticks);
+
+    svg.append("svg:g")
+        .attr("class", "x axis");
+
+    //create and draw the y axis
+    var yAxis = d3.svg.axis()
+        .scale(y)
+        .orient("left");
+        // .tickSize(0-width)
+        // .tickPadding(8);
+
+    svg.append("svg:g")
+        .attr("class", "y axis");
+
+    //bind the data
+    var thegraph = svg.selectAll(".thegraph")
+        .data(linedata);
+
+    var thegraphEnter=thegraph.enter().append("g")
+        .attr("clip-path", "url(#clip)")
+        .attr("class", "thegraph")
+        .attr('id',function(d){ return d.name+"-line"; })
+        .style("stroke-width",2.5)
+
+}
+
+function lineUp(selection,shiftKey) {
     //
     // console.log(selection);
     //set the margins
@@ -82,19 +170,19 @@ function lineUp(selection) {
     var yAxis = d3.svg.axis().scale(y)
         .orient("left").ticks(10);
 
-    var zoom = d3.behavior.zoom()
-        .x(x)
-        .y(y)
-        .scaleExtent([1, 10])
-        .on("zoom", function(){
-            console.log("zoom");
-            if(shiftKey == false)
-            zoomed();
-        });
+    // var zoom = d3.behavior.zoom()
+    //     .x(x)
+    //     .y(y)
+    //     .scaleExtent([1, 10])
+    //     .on("zoom", function(){
+    //         console.log("zoom");
+    //         if(shiftKey == false)
+    //         zoomed();
+    //     });
     //
 // Adds the svg canvas
     var svg = d3.select(".line").append("svg")
-        .call(zoom)
+        // .call(zoom)
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
         .append("g")
@@ -128,10 +216,6 @@ function lineUp(selection) {
 
     var linedata = [], node;
     selection.forEach(function (p) {
-        // p.dxdy=[];
-        // rects.forEach(function (d) {
-        //     dxdy.push(d.id,d.type);
-        // });
         linedata.push(p.rects);
         return p.rects;
     });
@@ -200,52 +284,61 @@ function lineUp(selection) {
         svg.select(".y.axis").call(yAxis);
         svg.selectAll('path.line').attr('d', line);
 
-        node.selectAll('circle').attr("transform", function (d) {
-            console.log(d);
-                return "translate(" + x(d.point.id) + "," + y(d.point.type) + ")";
-            }
-        );
+        // node.selectAll('circle').attr("transform", function (d) {
+            // console.log(d);
+            //     return "translate(" + x(d.point.id) + "," + y(d.point.type) + ")";
+            // }
+        // );
     }
 
+    // line.data(linedata).enter();
+
     var brush = svg.append("g")
+        .datum(function (d) {
+            // console.log(d);
+            return {selected: false};
+        })
         .attr("class", "brush")
         .call(d3.svg.brush()
             .x(d3.scale.identity().domain([0, width]))
             .y(d3.scale.identity().domain([0, height]))
-            .on("brushstart", function(d) {
-                svg = svg.call(d3.behavior.zoom().on("zoom", null));
-                console.log('brushstart');
-                // line.each(function(d) { d.previouslySelected = shiftKey && d.selected });
-                if (!shiftKey) {
-                    d3.event.target.clear();
-                    d3.select(this).call(d3.event.target);
-                }
-            })
+            // .on("brushstart", function(d) {
+            //     // svg = svg.call(d3.behavior.zoom().on("zoom", null));
+            //     // console.log('brushstart');
+            //     // line.each(function(d) { d.previouslySelected = shiftKey && d.selected });
+            //     if (!shiftKey) {
+            //         d3.event.target.clear();
+            //         d3.select(this).call(d3.event.target);
+            //     }
+            // })
             .on("brush", function () {
-                if(shiftKey){
-                    console.log('shiftKey', shiftKey);
+                // if(shiftKey){
+                //     console.log('shiftKey', shiftKey);
                     var extent = d3.event.target.extent();
-                    line.classed("selected", function (d) {
-                    return d.selected = extent[0][0] <= d.id && d.id < extent[1][0]
-                        && extent[0][1] <= d.type && d.type < extent[1][1];
-                });
-                } else {
-                    d3.event.target.clear();
-                    d3.select(this).call(d3.event.target);
-                }
+                    // console.log(extent);
+                    node.classed("selected", function (d) {
+                       var r= d.find(function (c) {
+                            return extent[0][0] <= x(c.id) && x(c.id) < extent[1][0]
+                                && extent[0][1] <= y(c.type) && y(c.type) < extent[1][1];
+                        });
+                        return d.selected =r;
+                        });
+                // } else {
+                //     d3.event.target.clear();
+                //     d3.select(this).call(d3.event.target);
+                // }
             })
-            .on("brushend", function() {
-                d3.event.target.clear();
-                d3.select(this).call(d3.event.target);
-                svg.call(d3.behavior.zoom().x(x).y(y).on("zoom", zoom));
-            }));
+        );
 
-    var shiftKey;
-    d3.select(window)
-        .on('keydown', function () {
-            shiftKey = d3.event.shiftKey;
-        })
-        .on('keyup', function () {
-            shiftKey = false;
-        });
+            // .on("brushend", function() {
+            // }));
+
+    // var shiftKey;
+    // d3.select(window)
+    //     .on('keydown', function () {
+    //         shiftKey = d3.event.shiftKey;
+    //     })
+    //     .on('keyup', function () {
+    //         shiftKey = false;
+    //     });
 }

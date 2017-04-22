@@ -101,11 +101,18 @@
             <!--<div id="graphic"  ng-controller="lineBrushCtrl">-->
             <form name="info">
                 <input type="number" ng-model="lineN" placeholder="line number">
+
+                <select ng-init="selectName = names[0]" ng-model="selectName" ng-options="x for x in names" ng-change="changeOption(selectName)"></select>
+
                 <input type="submit" value="Submit" ng-click="changeLineN(lineN)">
+                <!--<input type="checkbox" ng-model="confirmed" ng-change="" /> {{comfirmed}}-->
             </form>
 
                 <div class="line"></div>
-                <div id="graphic"></div>
+                <div id="graphic">
+                    <!--<input type="number" ng-model="belongN" placeholder="line number">-->
+                    <!--<input type="submit" value="Submit" ng-click="changeBelong(belongN)">-->
+                </div>
             </div>
         </div>
     </div>

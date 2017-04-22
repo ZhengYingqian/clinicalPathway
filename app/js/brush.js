@@ -158,7 +158,7 @@ d3.json("../data/names3.json",function (res) {
         .call(d3.svg.brush()
             .x(d3.scale.identity().domain([0, width]))
             .y(d3.scale.identity().domain([0, height]))
-            .on("brushstart", function(d) {
+            .on("brushstart", function() {
                 svg = svg.call(d3.behavior.zoom().on("zoom", null));
                 console.log('brushstart');
                 node.each(function(d) { d.previouslySelected = shiftKey && d.selected });

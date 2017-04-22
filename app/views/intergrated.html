@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Brush Example</title>
+    <title>Intergrated Example</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
     <link href="../styles/bootstrap.min.css" rel="stylesheet">
     <link href="../lib/dc/dc.css" rel="stylesheet">
     <link href="../styles/brush.css" rel="stylesheet">
 
     <script src="../lib/d3.v3.min.js" charset="utf-8"></script>
+    <script src="../lib/angular/angular.js" charset="utf-8"></script>
     <!--<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>-->
     <script src="../lib/d3.layout.cloud.js"></script>
     <script src="../lib/jquery.min.js"></script>
@@ -33,7 +36,7 @@
         font-weight: bold;
     }
 </style>
-<body ng-app = 'ctrlApp'>
+<body ng-app = 'app'>
 
 <div class="container">
     <div class="row clearfix">
@@ -89,8 +92,11 @@
     <div class="row clearfix">
 
         <div class="col-md-12 column" >
+            <div class="graphic"></div>
         </div>
     </div>
 </div>
+
+<script src="../js/intergrated.js"></script>
 </body>
 </html>
