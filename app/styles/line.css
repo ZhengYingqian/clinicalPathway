@@ -72,3 +72,9 @@ body {
 body {
     font-family:"Lucida Grande","Droid Sans",Arial,Helvetica,sans-serif;
 }
+
+.selected .circle{
+    stroke: black;
+    stroke-width: 2px;
+    opacity: 0.5;
+}
