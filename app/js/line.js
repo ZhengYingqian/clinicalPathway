@@ -160,7 +160,7 @@ function redraw(selection,shiftkey) {
         .attr("clip-path", "url(#clip)")
         .attr("class", "thegraph")
         .attr('id',function(d){ return d.name+"-line"; })
-        .style("stroke-width",2.5)
+        .style("stroke-width",2.5);
 
     //actually append the line to the graph
     thegraphEnter.append("path")
@@ -168,7 +168,7 @@ function redraw(selection,shiftkey) {
         .style("stroke", function(d) { return color(d.name); })
         .attr("d", function(d) { return line(d.values[0]); })
         .transition()
-        .duration(2000)
+        .duration(100)
         .attrTween('d',function (d){
             var interpolate = d3.scale.quantile()
                 .domain([0,1])
@@ -205,14 +205,14 @@ function redraw(selection,shiftkey) {
                 var elemented = document.getElementById(this.id +"-line");   //grab the line that has the same ID as this point along w/ "-line"  use get element cause ID has spaces
                 d3.select(elemented)
                     .transition()
-                    .duration(1000)
+                    .duration(100)
                     .style("opacity",0)
                     .style("display",'none');
 
                 d3.select(this)
                     .attr('fakeclass', 'fakelegend')
                     .transition()
-                    .duration(1000)
+                    .duration(100)
                     .style ("opacity", .2);
             } else {
 
@@ -220,13 +220,13 @@ function redraw(selection,shiftkey) {
                 d3.select(elemented)
                     .style("display", "block")
                     .transition()
-                    .duration(1000)
+                    .duration(100)
                     .style("opacity",1);
 
                 d3.select(this)
                     .attr('fakeclass','legend')
                     .transition()
-                    .duration(1000)
+                    .duration(100)
                     .style ("opacity", 1);}
         });
 
@@ -304,13 +304,13 @@ function redraw(selection,shiftkey) {
         .x(x)
         .y(y)
         .scaleExtent([1,8])
-        .on("zoom", zoomed());
+        .on("zoom", zoomed);
 
     if(shiftkey == 'zoom'){
         console.log(shiftkey);
         svg.call(zoom);
     } else if(shiftkey =='tips') {
-        var group=[];
+        // var group=[];
         console.log(shiftkey);
         thegraphEnter.on("mouseover", function (d) {
             d3.select(this)                          //on mouseover of each line, give it a nice thick stroke
@@ -348,14 +348,17 @@ function redraw(selection,shiftkey) {
                     .attr("class", "legend");
             })
             .on('click',function (d) {
-                console.log(d);
                 // this.addClass('selected');
                 d3.select(this)
                     .classed('selected',true);
+                d.selected=true;
+                console.log(d);
             })
             .on('dblclick',function (d) {
                 d3.select(this)
                     .classed('selected',false);
+                d.selected=false;
+                console.log(d);
             });
     }else{
         // d3.svg.call(brush);
@@ -378,26 +381,45 @@ function redraw(selection,shiftkey) {
                 //     }
                 // })
                 .on("brush", function () {
+                    // console.log(this);
                     // if(shiftKey){
                     //     console.log('shiftKey', shiftKey);
                     var extent = d3.event.target.extent();
                     // console.log(extent);
-                    node.classed("selected", function (d) {
-                        var r= d.find(function (c) {
+                    thegraphUpdate.classed("selected", function (d) {
+                        // console.log(d);
+                        // console.log(this);
+                        var r= d.values.find(function (c) {
                             return extent[0][0] <= x(c.id) && x(c.id) < extent[1][0]
                                 && extent[0][1] <= y(c.type) && y(c.type) < extent[1][1];
                         });
                         return d.selected =r;
                     });
+                    // console.log(thegraphUpdate);
                     // } else {
                     //     d3.event.target.clear();
                     //     d3.select(this).call(d3.event.target);
                     // }
                 })
             );
-
         // .on("brushend", function() {
         // }));
+    }
+    var drawInterval = setInterval(showData,100);
+    function showData() {
+
+        clearInterval(drawInterval);
+
+        var group = $('.selected ');
+        d3.selectAll(group)
+            .style("opacity",0.2);
+        console.log(group);
+        var bList=[];
+        group.each(function (i,d) {
+            bList.push(d.id.slice(0,2))
+        });
+
+        showStatistics1(bList);
     }
 
     function zoomed() {
@@ -610,4 +632,8 @@ function lineUp(selection,shiftKey) {
     //     .on('keyup', function () {
     //         shiftKey = false;
     //     });
+}
+function showStatistics1(bList) {
+    console.log(bList);
+
 }
