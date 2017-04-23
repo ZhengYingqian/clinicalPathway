@@ -3,15 +3,16 @@
  */
 var app = angular.module('app',[]);
 app.controller("ngCtl", [ '$scope', function($scope) {
-    $scope.names = ["zoom", "brush"];
+    $scope.names = ["zoom", "brush",'tips'];
 
     $scope.changeLine = function (lineM,selectName) {
+        console.log(selectName);
         d3.select('svg').remove();
         d3.select('.graphic svg').remove();
-        var shiftkey = (selectName == 'brush');
+        // var shiftkey = (selectName == 'brush');
 
         $scope.lineM = lineM;
-        $scope.shiftkey = shiftkey;
+        $scope.shiftkey = selectName;
         drawLine($scope.lineM,$scope.shiftkey);
     };
 
@@ -41,7 +42,7 @@ app.controller("ngCtl", [ '$scope', function($scope) {
             var plists = getLists(selection,res);
 
             console.log(selection);
-            lineUp(selection,shiftkey);
+            // lineUp(selection,shiftkey);
             redraw(selection,shiftkey);
         });
 
@@ -80,7 +81,7 @@ function redraw(selection,shiftkey) {
 
     //defines a function to be used to append the title to the tooltip.  you can set how you want it to display here.
     var maketip = function (d) {
-        var tip = '<p class="tip3">' + d.name + '<p class="tip1">' + d.type + '</p> <p class="tip3">'+d.id+'</p>';
+        var tip =/* '<p class="tip3">' + d.name + */'<p class="tip1">' + d.type+ /*'</p> <p class="tip3">'+d.id+*/'</p>';
         return tip;}
 
     //create svg
@@ -89,6 +90,21 @@ function redraw(selection,shiftkey) {
         .attr("height", height + margin.top + margin.bottom)
         .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    //make a rectangle so there is something to click on
+    svg.append("svg:rect")
+        .attr("width", width)
+        .attr("height", height)
+        .attr("class", "plot");
+
+    //make a clip path for the graph
+    var clip = svg.append("svg:clipPath")
+        .attr("id", "clip")
+        .append("svg:rect")
+        .attr("x", 0)
+        .attr("y", 0)
+        .attr("width", width)
+        .attr("height", height);
 
     var x = d3.scale.linear()
         .domain([
@@ -288,16 +304,61 @@ function redraw(selection,shiftkey) {
         .x(x)
         .y(y)
         .scaleExtent([1,8])
-        .on("zoom", zoomed);
+        .on("zoom", zoomed());
 
-    if(shiftkey == false){
-        console.log(shiftkey,'zoom');
+    if(shiftkey == 'zoom'){
+        console.log(shiftkey);
         svg.call(zoom);
-    } else {
-        // d3.svg.call(brush);
-        thegraphEnter.on('brush',function (d) {
+    } else if(shiftkey =='tips') {
+        var group=[];
+        console.log(shiftkey);
+        thegraphEnter.on("mouseover", function (d) {
+            d3.select(this)                          //on mouseover of each line, give it a nice thick stroke
+                .style("stroke-width",'6px');
 
+            var selectthegraphs = $('.thegraph').not(this);     //select all the rest of the lines, except the one you are hovering on and drop their opacity
+            d3.selectAll(selectthegraphs)
+                .style("opacity",0.2);
+
+            var getname = document.getElementById(d.name);    //use get element cause the ID names have spaces in them
+            var selectlegend = $('.legend').not(getname);    //grab all the legend items that match the line you are on, except the one you are hovering on
+
+            d3.selectAll(selectlegend)    // drop opacity on other legend names
+                .style("opacity",.2);
+
+            d3.select(getname)
+                .attr("class", "legend-select");  //change the class on the legend name that corresponds to hovered line to be bolder
         })
+            .on("mouseout",	function(d) {        //undo everything on the mouseout
+                d3.select(this)
+                    .style("stroke-width",'2.5px');
+
+                var selectthegraphs = $('.thegraph').not(this);
+                d3.selectAll(selectthegraphs)
+                    .style("opacity",1);
+
+                var getname = document.getElementById(d.name);
+                var getname2= $('.legend[fakeclass="fakelegend"]');
+                var selectlegend = $('.legend').not(getname2).not(getname);
+
+                d3.selectAll(selectlegend)
+                    .style("opacity",1);
+
+                d3.select(getname)
+                    .attr("class", "legend");
+            })
+            .on('click',function (d) {
+                console.log(d);
+                // this.addClass('selected');
+                d3.select(this)
+                    .classed('selected',true);
+            })
+            .on('dblclick',function (d) {
+                d3.select(this)
+                    .classed('selected',false);
+            });
+    }else{
+        // d3.svg.call(brush);
         var brush = svg.append("g")
             .datum(function (d) {
                 // console.log(d);
@@ -340,6 +401,7 @@ function redraw(selection,shiftkey) {
     }
 
     function zoomed() {
+        console.log('zoom start!');
         svg.select(".x.axis").call(xAxis);
         svg.select(".y.axis").call(yAxis);
 
