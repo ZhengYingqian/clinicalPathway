@@ -352,6 +352,7 @@ function redraw(selection,shiftkey) {
                 d3.select(this)
                     .classed('selected',true);
                 d.selected=true;
+                showStatistics1(d.values);
                 console.log(d);
             })
             .on('dblclick',function (d) {
@@ -635,5 +636,10 @@ function lineUp(selection,shiftKey) {
 }
 function showStatistics1(bList) {
     console.log(bList);
-
+    var list =[];
+    bList.forEach(function (d) {
+        list.push(d.type);
+    })
+    console.log(list);
+    showStatistics(list);
 }
