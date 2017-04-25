@@ -2,22 +2,49 @@
  * Created by yqzheng on 2017/4/19.
  */
 var app = angular.module('app',[]);
-app.controller("ngCtl", [ '$scope', function($scope) {
+app.controller("ngCtl", [ '$scope','$interval', function($scope,$interval) {
     $scope.names = ["zoom", "brush",'tips'];
 
-    $scope.changeLine = function (lineM,selectName) {
-        console.log(selectName);
+    $scope.changeLine = function (lineM) {
         d3.select('svg').remove();
         d3.select('.graphic svg').remove();
         // var shiftkey = (selectName == 'brush');
 
         $scope.lineM = lineM;
-        $scope.shiftkey = selectName;
-        drawLine($scope.lineM,$scope.shiftkey);
+
+        drawLine($scope.lineM,$scope.shiftkey,$interval);
     };
 
+    $scope.select = function (selectName) {
+        $scope.shiftkey = selectName;
+        console.log( $scope.shiftkey );
+        makeselect(selectName,$scope);
+    };
 
-    function drawLine(num,shiftkey) {
+    $scope.showData = function showData() {
+        // console.log('show data');
+        var group = $('.selected ');
+        var part = /\d+/g;
+        d3.selectAll(group)
+            .style("opacity",0.2);
+        console.log('selected groups:');
+        console.log(group);
+        var bList=[];
+        group.each(function (i,d) {
+            var belong = d.id.match(part);
+            bList.push(belong);
+        });
+        console.log(bList);
+
+        // var list =[];
+        // bList.forEach(function (d) {
+        //     list.push(d.type);
+        // });
+        // console.log(list);
+        // showStatistics(list);
+    };
+
+    function drawLine(num,shiftkey,$interval) {
         console.log('drawline' + num);
 
         d3.json("../data/names3.json", function (res) {
@@ -39,11 +66,11 @@ app.controller("ngCtl", [ '$scope', function($scope) {
                 }
             });
 
-            var plists = getLists(selection,res);
+            // var plists = getLists(selection,res);
 
             console.log(selection);
             // lineUp(selection,shiftkey);
-            redraw(selection,shiftkey);
+            redraw(selection,shiftkey,$interval,res,$scope);
         });
 
     }
@@ -60,7 +87,7 @@ function getLists(selection,data) {
     })
 }
 
-function redraw(selection,shiftkey) {
+function redraw(selection,shiftkey,$interval,res,$scope) {
     var margin = {top: 50, right: 160, bottom: 80, left: 50},
         width = 900 - margin.left - margin.right,
         height = 500 - margin.top - margin.bottom;
@@ -85,20 +112,20 @@ function redraw(selection,shiftkey) {
         return tip;}
 
     //create svg
-    var svg = d3.select('.graphic').append('svg')
+    $scope.svg = d3.select('.graphic').append('svg')
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
         .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
     //make a rectangle so there is something to click on
-    svg.append("svg:rect")
+    $scope.svg.append("svg:rect")
         .attr("width", width)
         .attr("height", height)
         .attr("class", "plot");
 
     //make a clip path for the graph
-    var clip = svg.append("svg:clipPath")
+    var clip = $scope.svg.append("svg:clipPath")
         .attr("id", "clip")
         .append("svg:rect")
         .attr("x", 0)
@@ -106,7 +133,7 @@ function redraw(selection,shiftkey) {
         .attr("width", width)
         .attr("height", height);
 
-    var x = d3.scale.linear()
+    $scope.x = d3.scale.linear()
         .domain([
             d3.min(linedata, function(c) {
                 console.log(c);
@@ -114,7 +141,7 @@ function redraw(selection,shiftkey) {
             d3.max(linedata, function(c) { return d3.max(c.values, function(v) { return v.id; }); })
         ])
         .range([0, width]);
-    var y = d3.scale.linear()
+    $scope.y = d3.scale.linear()
         .domain([
             d3.min(linedata, function(c) { return d3.min(c.values, function(v) { return v.type; }); }),
             d3.max(linedata, function(c) { return d3.max(c.values, function(v) { return v.type; }); })
@@ -124,9 +151,9 @@ function redraw(selection,shiftkey) {
     var line = d3.svg.line()
         .x(function (d) {
             // console.log(d);
-            return x(d.id);})
+            return $scope.x(d.id);})
         .y(function (d) {
-            return y(d.type);
+            return $scope.y(d.type);
         });
 
     //define the approx. number of x scale ticks
@@ -134,36 +161,36 @@ function redraw(selection,shiftkey) {
 
     //create and draw the x axis
     var xAxis = d3.svg.axis()
-        .scale(x)
+        .scale($scope.x)
         .orient("bottom");
         // .tickPadding(8)
         // .ticks(xscaleticks);
 
-    svg.append("svg:g")
+    $scope.svg.append("svg:g")
         .attr("class", "x axis");
 
     //create and draw the y axis
     var yAxis = d3.svg.axis()
-        .scale(y)
+        .scale($scope.y)
         .orient("left");
         // .tickSize(0-width)
         // .tickPadding(8);
 
-    svg.append("svg:g")
+    $scope.svg.append("svg:g")
         .attr("class", "y axis");
 
     //bind the data
-    var thegraph = svg.selectAll(".thegraph")
+    $scope.thegraph = $scope.svg.selectAll(".thegraph")
         .data(linedata);
 
-    var thegraphEnter=thegraph.enter().append("g")
+    $scope.thegraphEnter=$scope.thegraph.enter().append("g")
         .attr("clip-path", "url(#clip)")
         .attr("class", "thegraph")
         .attr('id',function(d){ return d.name+"-line"; })
         .style("stroke-width",2.5);
 
     //actually append the line to the graph
-    thegraphEnter.append("path")
+    $scope.thegraphEnter.append("path")
         .attr("class", "line")
         .style("stroke", function(d) { return color(d.name); })
         .attr("d", function(d) { return line(d.values[0]); })
@@ -179,22 +206,22 @@ function redraw(selection,shiftkey) {
         });
 
     //then append some 'nearly' invisible circles at each data point
-    thegraph.selectAll("circle")
+    $scope.thegraph.selectAll("circle")
         .data( function(d) {return(d.values);} )
         .enter()
         .append("circle")
         .attr("class","tipcircle")
-        .attr("cx", function(d,i){return x(d.id)})
-        .attr("cy",function(d,i){return y(d.type)})
+        .attr("cx", function(d,i){return $scope.x(d.id)})
+        .attr("cy",function(d,i){return $scope.y(d.type)})
         .attr("r",12)
         .style('opacity', 1e-6)//1e-6
         .attr ("title", maketip);
 
     //append the legend
-    var legend = svg.selectAll('.legend')
+    $scope.legend = $scope.svg.selectAll('.legend')
         .data(linedata);
 
-    var legendEnter=legend
+    $scope.legendEnter=$scope.legend
         .enter()
         .append('g')
         .attr('class', 'legend')
@@ -231,13 +258,16 @@ function redraw(selection,shiftkey) {
         });
 
     var lastvalues = [];
+    var range =new Array(selection.length);
+ for(var i=0,l=selection.length;i<l;i++){range[i]=i*30;}
+    console.log(range);
     //create a scale to pass the legend items through
     var legendscale= d3.scale.ordinal()
         .domain(lastvalues)
-        .range([0,30,60,90,120,150,180,210]);
+        .range(range);
 
     //actually add the circles to the created legend container
-    legendEnter.append('circle')
+    $scope.legendEnter.append('circle')
         .attr('cx', width +20)
         // .attr('cy', function(d){return legendscale(d.values[d.values.length-1].type);})
         .attr('cy',function (d) {return legendscale(d.name);})
@@ -247,7 +277,7 @@ function redraw(selection,shiftkey) {
         });
 
     //add the legend text
-    legendEnter.append('text')
+    $scope.legendEnter.append('text')
         .attr('x', width+35)
         // .attr('y', function(d){return legendscale(d.values[d.values.length-1].type);})
         .attr('y',function (d) {
@@ -256,43 +286,45 @@ function redraw(selection,shiftkey) {
         .text(function(d){ return d.name; });
 
     // set variable for updating visualization
-    var thegraphUpdate = d3.transition(thegraph);
+    $scope.thegraphUpdate = d3.transition($scope.thegraph);
 
     // change values of path and then the circles to those of the new series
-    thegraphUpdate.select("path")
+    $scope.thegraphUpdate.select("path")
         .attr("d", function(d, i) {
+            // if(!lastvalues.find(function (v) {return v == d.name;})){
+                lastvalues[i]=d.name;
+                lastvalues.sort(function (a,b){return b-a});
+                console.log(lastvalues);
+                legendscale.domain(lastvalues);
 
+                return line(d.values);
+            // }
             //must be a better place to put this, but this works for now
             // lastvalues[i]=d.values[d.values.length-1].type;
-            lastvalues[i]=d.name;
-            lastvalues.sort(function (a,b){return b-a});
-            console.log(lastvalues);
-            legendscale.domain(lastvalues);
+        });
 
-            return line(d.values); });
-
-    thegraphUpdate.selectAll("circle")
+    $scope.thegraphUpdate.selectAll("circle")
         .attr ("title", maketip)
-        .attr("cy",function(d,i){return y(d.type)})
-        .attr("cx", function(d,i){return x(d.id)});
+        .attr("cy",function(d,i){return $scope.y(d.type)})
+        .attr("cx", function(d,i){return $scope.x(d.id)});
 
 
     // and now for legend items
-    var legendUpdate=d3.transition(legend);
+    $scope.legendUpdate=d3.transition($scope.legend);
 
-    legendUpdate.select("circle")
+    $scope.legendUpdate.select("circle")
         .attr('cy', function(d, i){
             return legendscale(d.name);});
 
-    legendUpdate.select("text")
+    $scope.legendUpdate.select("text")
         .attr('y',  function (d) {return legendscale(d.name);});
 
 
     // update the axes,
-    d3.transition(svg).select(".y.axis")
+    d3.transition($scope.svg).select(".y.axis")
         .call(yAxis);
 
-    d3.transition(svg).select(".x.axis")
+    d3.transition($scope.svg).select(".x.axis")
         .attr("transform", "translate(0," + height + ")")
         .call(xAxis);
 
@@ -300,19 +332,44 @@ function redraw(selection,shiftkey) {
     $('circle').tipsy({opacity:.9, gravity:'n', html:true});
 
     //define the zoom
-    var zoom = d3.behavior.zoom()
-        .x(x)
-        .y(y)
+    $scope.zoom = d3.behavior.zoom()
+        .x($scope.x)
+        .y($scope.y)
         .scaleExtent([1,8])
         .on("zoom", zoomed);
 
-    if(shiftkey == 'zoom'){
+    // $interval(makeselect,10000);
+    // drawInterval();
+    function zoomed() {
+        console.log('zoom start!');
+        $scope.svg.select(".x.axis").call(xAxis);
+        $scope.svg.select(".y.axis").call(yAxis);
+
+        $scope.svg.selectAll(".tipcircle")
+            .attr("cx", function(d,i){return $scope.x(d.id)})
+            .attr("cy",function(d,i){return $scope.y(d.type)});
+
+        $scope.svg.selectAll(".line")
+            .attr("class","line")
+            .attr("d", function (d) { return line(d.values)});
+    }
+
+}
+
+function makeselect(shiftkey,$scope) {
+   var  svg = $('svg');
+    console.log('start selection');
+    console.log($scope);
+    if(shiftkey == 'zoom' || shiftkey == undefined){
         console.log(shiftkey);
-        svg.call(zoom);
+        $('g.brush').remove();
+        $scope.svg.call($scope.zoom);
     } else if(shiftkey =='tips') {
+        $scope.svg = $scope.svg.call(d3.behavior.zoom().on("zoom", null));
+        $('g.brush').remove();
         // var group=[];
         console.log(shiftkey);
-        thegraphEnter.on("mouseover", function (d) {
+        $scope.thegraphEnter.on("mouseover", function (d) {
             d3.select(this)                          //on mouseover of each line, give it a nice thick stroke
                 .style("stroke-width",'6px');
 
@@ -348,12 +405,10 @@ function redraw(selection,shiftkey) {
                     .attr("class", "legend");
             })
             .on('click',function (d) {
-                // this.addClass('selected');
+               console.log(d);
                 d3.select(this)
                     .classed('selected',true);
                 d.selected=true;
-                showStatistics1(d.values);
-                console.log(d);
             })
             .on('dblclick',function (d) {
                 d3.select(this)
@@ -361,82 +416,41 @@ function redraw(selection,shiftkey) {
                 d.selected=false;
                 console.log(d);
             });
-    }else{
-        // d3.svg.call(brush);
-        var brush = svg.append("g")
+        console.log($('.selected'));
+    }else if(shiftkey =='brush'){
+        console.log(shiftkey);
+        $scope.svg = $scope.svg.call(d3.behavior.zoom().on("zoom", null));
+        var brush = $scope.svg.append("g")
             .datum(function (d) {
                 // console.log(d);
                 return {selected: false};
             })
             .attr("class", "brush")
             .call(d3.svg.brush()
-                .x(d3.scale.identity().domain([0, width]))
-                .y(d3.scale.identity().domain([0, height]))
-                // .on("brushstart", function(d) {
-                //     // svg = svg.call(d3.behavior.zoom().on("zoom", null));
-                //     // console.log('brushstart');
-                //     // line.each(function(d) { d.previouslySelected = shiftKey && d.selected });
-                //     if (!shiftKey) {
-                //         d3.event.target.clear();
-                //         d3.select(this).call(d3.event.target);
-                //     }
-                // })
+                .x(d3.scale.identity().domain([0, svg.width()]))
+                .y(d3.scale.identity().domain([0, svg.height()]))
                 .on("brush", function () {
-                    // console.log(this);
-                    // if(shiftKey){
-                    //     console.log('shiftKey', shiftKey);
                     var extent = d3.event.target.extent();
                     // console.log(extent);
-                    thegraphUpdate.classed("selected", function (d) {
-                        // console.log(d);
-                        // console.log(this);
-                        var r= d.values.find(function (c) {
-                            return extent[0][0] <= x(c.id) && x(c.id) < extent[1][0]
-                                && extent[0][1] <= y(c.type) && y(c.type) < extent[1][1];
-                        });
-                        return d.selected =r;
+                    $scope.thegraphUpdate.classed("selected", function (d) {
+                        // console.log(this.classList);
+                        // if(this.classList.find(function (v) {return v=='selevted';})) {
+                        if(this.classList.length <=1){
+                            var r = d.values.find(function (c) {
+                                // console.log(c);
+                                return extent[0][0] <= $scope.x(c.id) && $scope.x(c.id) <= extent[1][0]
+                                    && extent[0][1] <= $scope.y(c.type) && $scope.y(c.type) <= extent[1][1];
+                            });
+                            // console.log(r)
+                            d.selected =r;
+                            return r;
+                        }
+                        // else return true;
                     });
-                    // console.log(thegraphUpdate);
-                    // } else {
-                    //     d3.event.target.clear();
-                    //     d3.select(this).call(d3.event.target);
-                    // }
+                    // console.log($('.selected'));
                 })
             );
-        // .on("brushend", function() {
-        // }));
     }
-    var drawInterval = setInterval(showData,100);
-    function showData() {
-
-        clearInterval(drawInterval);
-
-        var group = $('.selected ');
-        d3.selectAll(group)
-            .style("opacity",0.2);
-        console.log(group);
-        var bList=[];
-        group.each(function (i,d) {
-            bList.push(d.id.slice(0,2))
-        });
-
-        showStatistics1(bList);
-    }
-
-    function zoomed() {
-        console.log('zoom start!');
-        svg.select(".x.axis").call(xAxis);
-        svg.select(".y.axis").call(yAxis);
-
-        svg.selectAll(".tipcircle")
-            .attr("cx", function(d,i){return x(d.id)})
-            .attr("cy",function(d,i){return y(d.type)});
-
-        svg.selectAll(".line")
-            .attr("class","line")
-            .attr("d", function (d) { return line(d.values)});
-    }
-
 }
 
 function lineUp(selection,shiftKey) {
@@ -633,13 +647,4 @@ function lineUp(selection,shiftKey) {
     //     .on('keyup', function () {
     //         shiftKey = false;
     //     });
-}
-function showStatistics1(bList) {
-    console.log(bList);
-    var list =[];
-    bList.forEach(function (d) {
-        list.push(d.type);
-    })
-    console.log(list);
-    showStatistics(list);
 }
