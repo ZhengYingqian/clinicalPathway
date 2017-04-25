@@ -740,7 +740,8 @@ function showStatistics1(blist) {
                 var dataGroup=[];
                 // getData(dataGroup,data,list);
                 for(i=0,l=listArray.length;i<l;i++){
-                   getData1(dataGroup,data,listArray[i]);
+                    console.log(dataGroup);
+                    dataGroup=getData1(dataGroup,data,listArray[i]);
                 }
                 createCrossfilterGraphs1(dataGroup);
             });
@@ -751,6 +752,8 @@ function showStatistics1(blist) {
 }
 function getData1(dataGroup,data,list) {//dataGroup 要得到的统计数据，data，behavior.txt数据，list :rects
     var count=0;
+    // console.log(data[0]);
+    // console.log(list);
     for(var i=0;i<data.length;i++){
         //for(var i=0;i<100;i++){
         // if(data[i].list.length==2)console.log(data[i]);
@@ -759,7 +762,7 @@ function getData1(dataGroup,data,list) {//dataGroup 要得到的统计数据，d
         //      continue;
         //  }
         for(var j=0;j<list.length;j++){
-            if((list[j]-data[i].list[j])!=0)break;
+            if((list[j].type-data[i].list[j])!=0)break;
         }
         if(j ==list.length){
             //console.log(i,j,data[i].list.length);
