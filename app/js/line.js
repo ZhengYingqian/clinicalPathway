@@ -26,22 +26,31 @@ app.controller("ngCtl", [ '$scope','$interval', function($scope,$interval) {
         var group = $('.selected ');
         var part = /\d+/g;
         d3.selectAll(group)
+            .style("opacity",1);
+        d3.selectAll($('.thegraph').not(group))
             .style("opacity",0.2);
         console.log('selected groups:');
         console.log(group);
         var bList=[];
         group.each(function (i,d) {
-            var belong = d.id.match(part);
-            bList.push(belong);
+            var belong = parseInt(d.id.match(part));
+            if(!bList.find(function (d,i) {
+                // console.log(d,belong);
+                return d ==belong;
+            })){
+                bList.push(belong);
+            }
         });
-        console.log(bList);
+        // console.log(bList);
+        showStatistics1(bList);
+    };
 
-        // var list =[];
-        // bList.forEach(function (d) {
-        //     list.push(d.type);
-        // });
-        // console.log(list);
-        // showStatistics(list);
+    $scope.clearData = function clearData() {
+        console.log('clear!');
+        d3.selectAll($('.thegraph'))
+            .style("opacity",1)
+            .classed('selected',false);
+        d3.select('g.brush').remove();
     };
 
     function drawLine(num,shiftkey,$interval) {
@@ -294,7 +303,7 @@ function redraw(selection,shiftkey,$interval,res,$scope) {
             // if(!lastvalues.find(function (v) {return v == d.name;})){
                 lastvalues[i]=d.name;
                 lastvalues.sort(function (a,b){return b-a});
-                console.log(lastvalues);
+                // console.log(lastvalues);
                 legendscale.domain(lastvalues);
 
                 return line(d.values);
@@ -647,4 +656,192 @@ function lineUp(selection,shiftKey) {
     //     .on('keyup', function () {
     //         shiftKey = false;
     //     });
+}
+
+function showStatistics1(blist) {
+    console.log(blist);
+        d3.json("../data/names3.json", function (res) {
+            // console.log(res.length);
+
+            res.forEach(function (d) {
+                d.s = d.Pik * d.p;
+                d.belong += 1;
+            });
+            res.sort(function (a, b) {
+                return b.s - a.s; //按照由大到小排序
+            });
+            var clusters,plists,k=64;
+            [clusters,plists] = kMeans1(res,k,[1000,1000]);
+            // console.log(clusters);
+            console.log(plists);//plists：[0]:groups;
+            var array = [];
+            for(var i=0,l=blist.length;i<l;i++){
+                plists[blist[i]-1].forEach(function (d,i) {
+                    array.push(d[0]);//d:[groupId,[posx,posy]]
+                })
+            }
+            console.log(array);
+            var listArray=[];
+
+            res.forEach(function (d,i) {
+                if(array.find(function (v) {return v ==d.groupId;})){
+                    listArray.push(d.rects);
+                }
+            });
+            console.log(listArray);
+
+            $.get('../data/cartbehavior1S.txt').success(function (content) {
+                var data=[];
+                content=content.split(/\n/);
+                //  var data=typeof (content);
+                for(var i=0;i<content.length;i++){
+                    var old = content[i];
+                    // console.log(i,content[i]);
+                    old=old.split(/\s+/);
+                    record={
+                        'segment':old[0],
+                        'gender':old[1].toLocaleLowerCase(),
+                        'years':old[2],
+                        'time':old[3],
+                        'clickStream':old[6]
+                    };
+                    record.clickStream=record.clickStream.split(',');
+                    record.list=[];
+                    for(var j=0;j<record.clickStream.length;j++){
+                        var x=0;
+                        switch (record.clickStream[j]){
+                            case 'VIEW':
+                                x=1;
+                                break;
+                            case 'ADD':
+                                x=2;
+                                break;
+                            case 'REMOVE':
+                                x=3;
+                                break;
+                            case 'UPDATE':
+                                x=4;
+                                break;
+                            default:
+                                x=5;
+                        }
+                        record.list.push(x);
+                    }
+                    if(old[4]=='N/A'){
+                        record.cartSize=old[4];
+                    }else if(old[4]<40){
+                        var y=Math.floor(parseInt(old[4])/10);
+                        record.cartSize='('+y*10+','+(y+1)*10+')';
+                    }else record.cartSize='>40';
+                    data.push(record)
+                }
+                console.log(data.length);
+                // console.log(data[0]);
+                var dataGroup=[];
+                // getData(dataGroup,data,list);
+                for(i=0,l=listArray.length;i<l;i++){
+                   getData1(dataGroup,data,listArray[i]);
+                }
+                createCrossfilterGraphs1(dataGroup);
+            });
+
+        });
+
+
+}
+function getData1(dataGroup,data,list) {//dataGroup 要得到的统计数据，data，behavior.txt数据，list :rects
+    var count=0;
+    for(var i=0;i<data.length;i++){
+        //for(var i=0;i<100;i++){
+        // if(data[i].list.length==2)console.log(data[i]);
+        //  if(data[i].list.length!=list.length){
+        //      //console.log(data[i]);
+        //      continue;
+        //  }
+        for(var j=0;j<list.length;j++){
+            if((list[j]-data[i].list[j])!=0)break;
+        }
+        if(j ==list.length){
+            //console.log(i,j,data[i].list.length);
+            dataGroup.push(data[i]);
+            count++;
+        }
+    }
+    return dataGroup;
+}
+//设置crossfilter
+function createCrossfilterGraphs1(dataGroup) {
+    var width = 250,
+        height=250,
+        record={};
+
+    console.log('dataGroup');
+    console.log(dataGroup);//dataGroup 和list一样的数据集
+    var recordsCf = crossfilter(dataGroup);
+    record.dim = {
+        'segment':recordsCf.dimension(function (d) {
+            return d.segment;
+        }),
+        'gender':recordsCf.dimension(function (d) {
+            return d.gender;
+        }),
+        'years':recordsCf.dimension(function (d) {
+            return d.years;
+        }),
+        'cartSize':recordsCf.dimension(function (d) {
+            return d.cartSize;
+        })
+    };
+    var segmentGroup = record.dim.segment.group().reduceCount(),
+        genderGroup = record.dim.gender.group().reduceCount(),
+        yearsGroup = record.dim.years.group().reduceCount(),
+        cartSizeGroup = record.dim.cartSize.group().reduceCount();
+
+    var segmentChart = dc.barChart('.segment'),
+        genderChart = dc.barChart('.gender'),
+        yearsChart = dc.barChart('.years'),
+        cartSizeChart = dc.barChart('.cartSize');
+
+    segmentChart.margins().left = 60;
+    genderChart.margins().left = 60;
+    yearsChart.margins().left = 60;
+    cartSizeChart.margins().left = 60;
+
+    segmentChart.width(width)
+        .height(height)
+        .x(d3.scale.ordinal())
+        .xUnits(dc.units.ordinal)
+        .xAxisLabel("Buyer Segment")
+        .dimension(record.dim.segment)
+        .group(segmentGroup)
+        .elasticY(true)
+        .controlsUseVisibility(true);
+    genderChart.width(width)
+        .height(height)
+        .x(d3.scale.ordinal())
+        .xUnits(dc.units.ordinal)
+        .xAxisLabel("gender")
+        .dimension(record.dim.gender)
+        .group(genderGroup)
+        .elasticY(true)
+        .controlsUseVisibility(true);
+    yearsChart.width(width)
+        .height(height)
+        .x(d3.scale.ordinal())
+        .xUnits(dc.units.ordinal)
+        .xAxisLabel("Years being an eBay User")
+        .dimension(record.dim.years)
+        .group(yearsGroup)
+        .elasticY(true)
+        .controlsUseVisibility(true);
+    cartSizeChart.width(width+100)
+        .height(height)
+        .x(d3.scale.ordinal())
+        .xUnits(dc.units.ordinal)
+        .xAxisLabel("Cart Size")
+        .dimension(record.dim.cartSize)
+        .group(cartSizeGroup)
+        .elasticY(true)
+        .controlsUseVisibility(true);
+    dc.renderAll();
 }

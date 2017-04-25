@@ -143,24 +143,20 @@ $.get('../data/cartbehavior1S.txt').success(function (content) {
     }
     console.log(data.length);
    // console.log(data[0]);
-    createCrossfilterGraphs(data,list);
+    var dataGroup=[];
+    getData(dataGroup,data,list);
 });
 }
 
-//设置crossfilter
-function createCrossfilterGraphs(data,list) {
-    var width = 250,
-        height=250,
-        record={},
-        dataGroup=[],
-        count=0;
+function getData(dataGroup,data,list) {//dataGroup 要得到的统计数据，data，behavior.txt数据，list :rects
+    var count=0;
     for(var i=0;i<data.length;i++){
-    //for(var i=0;i<100;i++){
-       // if(data[i].list.length==2)console.log(data[i]);
-       //  if(data[i].list.length!=list.length){
-       //      //console.log(data[i]);
-       //      continue;
-       //  }
+        //for(var i=0;i<100;i++){
+        // if(data[i].list.length==2)console.log(data[i]);
+        //  if(data[i].list.length!=list.length){
+        //      //console.log(data[i]);
+        //      continue;
+        //  }
         for(var j=0;j<list.length;j++){
             if((list[j]-data[i].list[j])!=0)break;
         }
@@ -170,8 +166,16 @@ function createCrossfilterGraphs(data,list) {
             count++;
         }
     }
-    console.log(count);
-    console.log(dataGroup);
+    createCrossfilterGraphs(dataGroup)
+}
+//设置crossfilter
+function createCrossfilterGraphs(dataGroup) {
+    var width = 250,
+        height=250,
+        record={};
+
+    console.log('dataGroup');
+    console.log(dataGroup);//dataGroup 和list一样的数据集
     var recordsCf = crossfilter(dataGroup);
     record.dim = {
         'segment':recordsCf.dimension(function (d) {

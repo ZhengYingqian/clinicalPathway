@@ -104,6 +104,8 @@
 
                 <select ng-init="selectName = names[0]" ng-model="selectName" ng-options="x for x in names" ng-click="select(selectName)"></select>
 
+                <input type="submit" value="showData" ng-click="showData()">
+                <input type="submit" value="clearData" ng-click="clearData()">
 
                 <!--<input type="checkbox" ng-model="confirmed" ng-change="" /> {{comfirmed}}-->
             </form>
@@ -113,7 +115,6 @@
                     <!--<input type="number" ng-model="belongN" placeholder="line number">-->
                     <!--<input type="submit" value="Submit" ng-click="changeBelong(belongN)">-->
                 </div>
-                <input type="submit" value="showData" ng-click="showData()">
                 <div class="crossfilter">
                     <div class="segment col-xs-3"></div>
                     <div class="gender col-xs-3"></div>
