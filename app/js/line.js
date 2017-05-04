@@ -740,7 +740,7 @@ function showStatistics1(blist) {
                 var dataGroup=[];
                 // getData(dataGroup,data,list);
                 for(i=0,l=listArray.length;i<l;i++){
-                    console.log(dataGroup);
+                    // console.log(dataGroup);
                     dataGroup=getData1(dataGroup,data,listArray[i]);
                 }
                 createCrossfilterGraphs1(dataGroup);

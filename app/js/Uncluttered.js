@@ -1,7 +1,14 @@
 /**
  * Created by yqzheng on 2017/3/29.
  */
-
+//两个数组想加的函数
+function arradd(a,b) {
+    var c = [];
+    a.forEach(function(v, i) {
+        c.push(v + b[i]);
+    });
+    return c;
+}
 function getLayout1(data,size,widthScale,maxLen){
     var bounds = [],
         spiral = archimedeanSpiral(size),
@@ -18,22 +25,23 @@ function getLayout1(data,size,widthScale,maxLen){
     k=clusters.length;
     for (i=0;i<k&&t<groupNum ;i++){
         idx = clusters[i].belong;
-        spiralInt = Math.sqrt((clusters[i].pos[1])^2+(clusters[i].pos[0])^2);
-     console.log(i,spiralInt);
+        spiralInt = 0;
+     // console.log(i,spiralInt);
         var items=plists[idx],test=0;
      //   console.log(items);
         if(items.length>0){
             for(j=0,num=items.length;j<num;j++){
                 group = findId(items[j][0],data,size);
                 // console.log(group);
-                group.rectLength= (widthScale[1] - widthScale[0]) / numMax * group.num + widthScale[0];
+                group.rectLength= (widthScale[1] - widthScale[0])*group.Pik + widthScale[0];
                 rectsLength = group.rects.length;//矩形数量
                 do {
-                    bound = getBound(spiral(spiralInt), group.rectLength, rectsLength);
+
+                    bound = getBound(arradd(spiral(spiralInt),clusters[i].pos), group.rectLength, rectsLength);
                     isConflicting = judgeBound(bound, bounds, padding);
                     spiralInt += spiralStep;
                     test++;
-                }while (spiralInt-clusters[i].pos[1] <100 &&isConflicting && test < 1000);
+                }while ( isConflicting && test < 100000);
                 bounds.push(bound);
                 maxSize=pushGroupRects(group, bound,outputRects,maxSize);
                 t++;
@@ -45,15 +53,25 @@ function getLayout1(data,size,widthScale,maxLen){
 
 //将svg添加到body上去、width&height分别是图大小
 function draw1(id,rects,maxSize,data) {
-    d3.select('#'+id).append("svg")
-        .attr("width", 1000)
-        .attr("height", 1000)
+    var shiftKey;
+    var svg = d3.select('#'+id).append("svg")
+        .attr("width", maxSize[0])
+        .attr("height", maxSize[1])
         .append("g")
-        .attr("transform", "translate(150,550)")
-        .selectAll(".rect")//选择标签rect
+        .attr("transform", "translate(0,0)")
+
+  var   rect = svg.append('rect')
+        .attr('pointer-events', 'all')
+        .attr('width', maxSize[0])
+        .attr('height', maxSize[1])
+        .style('fill', 'none');
+
+      var rectL =  svg .selectAll(".rect")//选择标签rect
         .data(rects)//绑定数据
-        .enter().append("rect")//表示rect的连续绑定
-        .attr("x", function (d) {
+         .enter()
+          .append("rect")//表示rect的连续绑定
+        .attr('class','rect')
+          .attr("x", function (d) {
             // console.log(d);
             return d.x;
         })
@@ -74,9 +92,133 @@ function draw1(id,rects,maxSize,data) {
         .on("click",function (d) {
             showup(d,data);
         });
+
+    var x = d3.scale.linear()
+        .range([0, maxSize[0]]);
+
+    var y = d3.scale.linear()
+        .range([maxSize[1], 0]);
+
+        // .attr("width", maxSize[0])
+        // .attr("height",maxSize[1]);
+    console.log(rectL);
+    // console.log(brush);
+
+    // var brush = svg.append('g')
+    var brush = svg.append('g')
+        .attr('class','brush').datum(function (d) {
+            // console.log(d);
+            return {selected: false}}
+        )
+        // .attr('class','brush')
+        .call(d3.svg.brush()
+            .x(d3.scale.identity().domain([0,  maxSize[0]]))
+            .y(d3.scale.identity().domain([0,  maxSize[1]]))
+            .on('brush',function (d) {
+                if (shiftKey) {
+                    var extent = d3.event.target.extent();
+                    console.log(extent);
+                    rectL.classed('selected',function (d) {
+                        return extent[0][0] <= d.x && d.x <= extent[1][0]
+                            && extent[0][1] <= d.y && (d.y) <= extent[1][1];
+                    })
+                } else {
+                    d3.event.target.clear();
+                    d3.select(this).call(d3.event.target);
+                // console.log(rectL);
+            };})
+            // .on("brushend", function() {
+            //     d3.event.target.clear();
+            //     d3.select(this).call(d3.event.target);
+            //     // svg.call(d3.behavior.zoom().x(x).y(y).on("zoom", zoom));
+            // })
+        )
+    d3.select(window).on("keydown", function() {
+        shiftKey = d3.event.shiftKey;
+        if (shiftKey) {
+            rect = rect.attr('pointer-events', 'none');
+        } else {
+            rect = rect.attr('pointer-events', 'all');
+        }
+    });
+
+    d3.select(window).on("keyup", function() {
+        shiftKey = d3.event.shiftKey;
+        if (shiftKey) {
+            rect = rect.attr('pointer-events', 'none');
+        } else {
+            rect = rect.attr('pointer-events', 'all');
+        }
+    });
+
+    function get_selection(){
+        selection = [];
+        rectL.each(function(d) {
+            if (d.selected) {
+                selection.push(d);
+            }
+        });
+
+        console.log(selection);
+        selection.forEach(function (d) {
+            var idx = lis.find(function(val){return val ==d.belong});
+            if(!idx){lis.push(d.belong)}
+        });
+
+        console.log(lis);
+        var legend = svg.selectAll(".legend")
+        // .data(color.domain())
+            .data(lis)
+            .enter().append("g")
+            .attr("class", "legend")
+            .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+        // console.log(color.domain());
+        legend.append("rect")
+            .attr("x", width +10)
+            .attr("width", 18)
+            .attr("height", 18)
+            .style("fill", function(d){
+                // console.log(d);
+                // return color1(linear(d))});
+                return color(d)});
+        // .stream('fill',color);
+
+        legend.append("text")
+            .attr("x", width +44)
+            .attr("y", 9)
+            .attr("dy", ".35em")
+            .style("text-anchor", "end")
+            .text(function(d) { return d; });
+        legend.on('click',function (d) {
+            showSelected(d);
+        });
+        /*   legend.on('mouseout',function (d) {
+         clear_selection(d);
+         })*/
+    }
+
+    function showSelected(belong) {
+        rectL.each(function (d) {
+            if(d.belong ==belong){
+                d.selected = true;
+            }
+        });
+        rectL.classed('selected', function (d) {
+            return d.selected;});
+    }
+// function hideSelected(d) {
+//
+// }
+    function clear_selection() {
+        rectL.classed('selected', function (d) { return d.selected = false; });
+        svg.selectAll('.legend').remove();
+        d3.select('.graphic').remove();
+        lis = [];
+    }
+    // svg.call(d3.behavior.zoom().x(x).y(y).on('zoom'))
 }
 
-var size = [1000, 1000],widthScale = [5, 20],showN=1000,x=0.1;
+var size = [400, 400],widthScale = [3, 10],showN=100,x=0.1;
 
 d3.json("../data/names.json",function (res) {
     for(var i=0;i<res.length;i++){

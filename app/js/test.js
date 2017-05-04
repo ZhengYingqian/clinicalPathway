@@ -4,7 +4,7 @@
 "use strict";
 var color = d3.scale.category20(),
     rectsData;
-d3.json("data/names.json", function (res) {
+d3.json("../data/names.json", function (res) {
     console.log(res);
     rectsData = getLayout(res);
     draw(rectsData);
@@ -15,6 +15,7 @@ function getLayout(data) {
         // spiral = rectangularSpiral(size),
         widthScale = [20, 100],
         bounds = [],
+        pos = [0,0],
         outputRects = [],
         spiralInt = 0,
         spiralStep = 0.5,
@@ -38,7 +39,8 @@ function getLayout(data) {
         group.rectLength = (widthScale[1] - widthScale[0]) / numMax * group.num + widthScale[0];
         rectsLength = group.rects.length;
         do {
-            bound = getBound(spiral(spiralInt), group.rectLength, rectsLength);
+            var center = arradd(spiral(spiralInt),pos);
+            bound = getBound(center, group.rectLength, rectsLength);
            isConflicting = judgeBound(bound, bounds, padding);
             spiralInt += spiralStep;
            // console.log(spiralInt);
@@ -56,6 +58,7 @@ function getLayout(data) {
 function archimedeanSpiral(size) {
     var e = size[0] / size[1];
     return function (t) {
+        // console.log(t);
         return [e * (t *= 0.1) * Math.cos(t), t * Math.sin(t)];
     };
 }
@@ -151,4 +154,13 @@ function draw(rects) {
             console.log(d);
             console.log(d.groupId);
         });
+}
+
+//两个数组想加的函数
+function arradd(a,b) {
+    var c = [];
+    a.forEach(function(v, i) {
+        c.push(v + b[i]);
+    });
+    return c;
 }
