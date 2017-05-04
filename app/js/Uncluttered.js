@@ -9,6 +9,7 @@ function arradd(a,b) {
     });
     return c;
 }
+//layout函数
 function getLayout1(data,size,widthScale,maxLen){
     var bounds = [],
         spiral = archimedeanSpiral(size),
@@ -54,24 +55,24 @@ function getLayout1(data,size,widthScale,maxLen){
 //将svg添加到body上去、width&height分别是图大小
 function draw1(id,rects,maxSize,data) {
     var shiftKey;
-    var svg = d3.select('#'+id).append("svg")
+    var svg = d3.select('#' + id).append("svg")
         .attr("width", maxSize[0])
         .attr("height", maxSize[1])
         .append("g")
-        .attr("transform", "translate(0,0)")
+        .attr("transform", "translate(0,0)");
 
-  var   rect = svg.append('rect')
+    var rect = svg.append('rect')
         .attr('pointer-events', 'all')
         .attr('width', maxSize[0])
         .attr('height', maxSize[1])
         .style('fill', 'none');
 
-      var rectL =  svg .selectAll(".rect")//选择标签rect
+    var rectL = svg.selectAll(".rect")//选择标签rect
         .data(rects)//绑定数据
-         .enter()
-          .append("rect")//表示rect的连续绑定
-        .attr('class','rect')
-          .attr("x", function (d) {
+        .enter()
+        .append("rect")//表示rect的连续绑定
+        .attr('class', 'rect')
+        .attr("x", function (d) {
             // console.log(d);
             return d.x;
         })
@@ -86,12 +87,23 @@ function draw1(id,rects,maxSize,data) {
             return d.height;
         })
         .style("fill", function (d) {
-          //  showup(d,data);
+            //  showup(d,data);
             return color(d.type);
         })
-        .on("click",function (d) {
-            showup(d,data);
+        .on("dbclick", function (d) {
+            clear_selection();
+            if (shiftKey) {
+                d3.select(this).classed("selected", d.selected = true);
+            }
+            else {
+                rectL.classed("selected", function (p) {
+                    return p.selected = d === p;
+                });
+            }
         });
+    rectL.classed('selected', function (d) {
+        return d.selected;
+    });
 
     var x = d3.scale.linear()
         .range([0, maxSize[0]]);
@@ -99,41 +111,40 @@ function draw1(id,rects,maxSize,data) {
     var y = d3.scale.linear()
         .range([maxSize[1], 0]);
 
-        // .attr("width", maxSize[0])
-        // .attr("height",maxSize[1]);
-    console.log(rectL);
-    // console.log(brush);
-
-    // var brush = svg.append('g')
+    var selection = [], lis = [];
     var brush = svg.append('g')
-        .attr('class','brush').datum(function (d) {
-            // console.log(d);
-            return {selected: false}}
-        )
-        // .attr('class','brush')
+        .attr('class', 'brush')
+        .datum(function (d) {return {selected: false}})
         .call(d3.svg.brush()
-            .x(d3.scale.identity().domain([0,  maxSize[0]]))
-            .y(d3.scale.identity().domain([0,  maxSize[1]]))
-            .on('brush',function (d) {
+            .x(d3.scale.identity().domain([0, maxSize[0]]))
+            .y(d3.scale.identity().domain([0, maxSize[1]]))
+            .on('brush', function (d) {
+                d3.select('.showup svg').remove();
                 if (shiftKey) {
                     var extent = d3.event.target.extent();
-                    console.log(extent);
-                    rectL.classed('selected',function (d) {
-                        return extent[0][0] <= d.x && d.x <= extent[1][0]
+                    // console.log(extent);
+                    rectL.classed('selected', function (d) {
+                        return d.selected = extent[0][0] <= d.x && d.x <= extent[1][0]
                             && extent[0][1] <= d.y && (d.y) <= extent[1][1];
-                    })
+                    });
                 } else {
                     d3.event.target.clear();
                     d3.select(this).call(d3.event.target);
-                // console.log(rectL);
-            };})
-            // .on("brushend", function() {
-            //     d3.event.target.clear();
-            //     d3.select(this).call(d3.event.target);
-            //     // svg.call(d3.behavior.zoom().x(x).y(y).on("zoom", zoom));
-            // })
-        )
-    d3.select(window).on("keydown", function() {
+                }
+            })
+            .on("brushend", function () {
+                d3.event.target.clear();
+                d3.select(this).call(d3.event.target);
+                console.log(rectL);
+                selection = [];
+                lis = [];
+                svg.selectAll('.legend').remove();
+                get_selection(selection, lis);
+                drawLegend(selection,lis);
+            })
+        );
+
+    d3.select(window).on("keydown", function () {
         shiftKey = d3.event.shiftKey;
         if (shiftKey) {
             rect = rect.attr('pointer-events', 'none');
@@ -141,8 +152,7 @@ function draw1(id,rects,maxSize,data) {
             rect = rect.attr('pointer-events', 'all');
         }
     });
-
-    d3.select(window).on("keyup", function() {
+    d3.select(window).on("keyup", function () {
         shiftKey = d3.event.shiftKey;
         if (shiftKey) {
             rect = rect.attr('pointer-events', 'none');
@@ -150,76 +160,88 @@ function draw1(id,rects,maxSize,data) {
             rect = rect.attr('pointer-events', 'all');
         }
     });
+    //添加图例
+    function drawLegend(selection,lis) {
+    var color = d3.scale.category20();
+    console.log(lis);
+    var legend = d3.select('.showup').append('svg').selectAll(".legend")
+    // .data(color.domain())
+        .data(lis)
+        .enter().append("g")
+        .attr("class", "legend")
+        .attr("transform", function (d, i) {
+            return "translate("+ i * 30 +",0 )";
+        });
+    // console.log(color.domain());
+    legend.append("rect")
+        .attr("y", 0)
+        .attr("width", 30)
+        .attr("height", 18)
+        .style("fill", function (d) {return color(d)});
 
-    function get_selection(){
+    legend.append("text")
+        .attr("y", 30)
+        .attr("dx", "3em")
+        .style("text-anchor", "end")
+        .text(function (d) {return d;});
+
+    legend.on('click', function (d) {
         selection = [];
+        showSelected(d,data);
+    });
+}
+    //根据selected===true判断是否展示
+    function get_selection(selection,lis){
         rectL.each(function(d) {
             if (d.selected) {
                 selection.push(d);
             }
         });
 
+        rectL .attr('opacity',function (d) {return d.selected ? 1:0.5;});
+
         console.log(selection);
         selection.forEach(function (d) {
-            var idx = lis.find(function(val){return val ==d.belong});
-            if(!idx){lis.push(d.belong)}
+            var temp =findId(d.groupId,data,[]);
+            var idx = lis.find(function(val){return val ==temp.belong});
+            if(!idx){lis.push(temp.belong)}
         });
 
-        console.log(lis);
-        var legend = svg.selectAll(".legend")
-        // .data(color.domain())
-            .data(lis)
-            .enter().append("g")
-            .attr("class", "legend")
-            .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
-        // console.log(color.domain());
-        legend.append("rect")
-            .attr("x", width +10)
-            .attr("width", 18)
-            .attr("height", 18)
-            .style("fill", function(d){
-                // console.log(d);
-                // return color1(linear(d))});
-                return color(d)});
-        // .stream('fill',color);
-
-        legend.append("text")
-            .attr("x", width +44)
-            .attr("y", 9)
-            .attr("dy", ".35em")
-            .style("text-anchor", "end")
-            .text(function(d) { return d; });
-        legend.on('click',function (d) {
-            showSelected(d);
-        });
-        /*   legend.on('mouseout',function (d) {
-         clear_selection(d);
-         })*/
+        showStatistics1(lis);
+        rectL.classed('selected', function (d) { return d.selected = false; });
     }
-
-    function showSelected(belong) {
+    //单个类别显示
+    function showSelected(belong,data) {
+        var groupIdGroup = [];
+        data.forEach(function (p) {
+            if(p.belong ==belong){
+                groupIdGroup.push(p.groupId);
+            }}
+        );
+        console.info('groupIdGroup');
+        console.log(groupIdGroup);
         rectL.each(function (d) {
-            if(d.belong ==belong){
+            // if(d.groupId ==belong){
+            if(groupIdGroup.find(function (c) {return c ==d.groupId}) ){
                 d.selected = true;
-            }
+            }else d.selected =false;
         });
         rectL.classed('selected', function (d) {
-            return d.selected;});
+            return d.selected;})
+            .attr('opacity', function (d) {
+            return d.selected ? 1 : 0.5;
+        })
+
+        get_selection([],[belong])
     }
-// function hideSelected(d) {
-//
-// }
+    //清除选中序列和添加的svg图
     function clear_selection() {
         rectL.classed('selected', function (d) { return d.selected = false; });
-        svg.selectAll('.legend').remove();
-        d3.select('.graphic').remove();
-        lis = [];
+        d3.selectAll('.legend').remove();
     }
-    // svg.call(d3.behavior.zoom().x(x).y(y).on('zoom'))
 }
 
-var size = [400, 400],widthScale = [3, 10],showN=100,x=0.1;
-
+var size = [1000, 1000],widthScale = [5, 10],showN=800,x=0.1;
 d3.json("../data/names.json",function (res) {
     for(var i=0;i<res.length;i++){
         res[i].s=res[i].Pik*res[i].p;
@@ -289,16 +311,9 @@ $.get('../data/cartbehavior1S.txt').success(function (content) {
     getData(dataGroup,data,list);
 });
 }
-
 function getData(dataGroup,data,list) {//dataGroup 要得到的统计数据，data，behavior.txt数据，list :rects
     var count=0;
     for(var i=0;i<data.length;i++){
-        //for(var i=0;i<100;i++){
-        // if(data[i].list.length==2)console.log(data[i]);
-        //  if(data[i].list.length!=list.length){
-        //      //console.log(data[i]);
-        //      continue;
-        //  }
         for(var j=0;j<list.length;j++){
             if((list[j]-data[i].list[j])!=0)break;
         }
@@ -386,6 +401,7 @@ function createCrossfilterGraphs(dataGroup) {
         .controlsUseVisibility(true);
     dc.renderAll();
 }
+
 //kmeans算法实现：
 function kMeans1(data,k,size){
     console.log(data[0]);
@@ -394,14 +410,12 @@ function kMeans1(data,k,size){
         var temp={};
         temp.belong=data[i].belong;
         temp.pos=[data[i].groupId,[data[i].OutputX*size[0],data[i].OutputY*size[1]]];
-      //  temp.groupId = data[i].groupId;
         points.push(temp);
     }
     console.log(points[0]);
     var plen = points.length,
         clusters =[],
         seen = [],
-        // x=new Array(64),
         j,found=false;
     i=0;
    while(clusters.length<=k && i<plen){

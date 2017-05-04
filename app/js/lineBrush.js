@@ -9,15 +9,6 @@ angular.module('app',[]).controller("ngCtl", [ '$scope', function($scope) {
         width = 900 - margin.left - margin.right,
         height = 500 - margin.top - margin.bottom;
 
-    //set dek and head to be as wide as SVG
-    // d3.select('#dek')
-    //     .style('width', width+'px');
-    // d3.select('#headline')
-    //     .style('width',width+'px');
-
-    //write out your source text here
-//    var sourcetext= "Source: XXXXX";
-
     // set the type of number here, n is a number with a comma, .2% will get you a percent, .2f will get you 2 decimal points
     var NumbType = d3.format(".2f");
 

@@ -72,6 +72,7 @@ function pushGroupRects(group, bound, outputRects,maxSize) {
 }
 //根据grooupId返回具体数据
 function findId(id,data,size) {
+    // console.log(id,data);
     for( var i=0;i<data.length;i++){
         if(id ===data[i].groupId){
             // data[i].OutputX*=size[0];

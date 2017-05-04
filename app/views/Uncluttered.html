@@ -2,8 +2,11 @@
 <html>
 <head>
     <title>Uncluttered View</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
     <link href="../styles/bootstrap.min.css" rel="stylesheet">
     <link href="../lib/dc/dc.css" rel="stylesheet">
+    <link href="../styles/brush.css" rel="stylesheet">
 
     <script src="../lib/d3.v3.min.js"></script>
     <script src="../lib/d3.layout.cloud.js"></script>
@@ -90,22 +93,23 @@
     </div>
     <div class="row clearfix">
 
-        <div class="col-md-12 column">
+        <div class="col-md-8 column">
             <h3>
                 Unclustered View
             </h3>
             <div id="Uncluttered">
-                <div class="tips pull-right"></div>
             </div>
-            <!--<hr />-->
-            <!--<div>selected clickstream</div>-->
-
+            <span>选中序列所属类别</span>
+            <div class="showup" style="height: 60px"></div>
+            <!--<input type="button" class="button" >-->
+            <span>所选序列统计信息</span>
         </div>
-        <div class="showup"></div>
+        <div class="col-md-12 column">
         <div class="segment col-xs-3"></div>
         <div class="gender col-xs-3"></div>
         <div class="years col-xs-3"></div>
         <div class="cartSize col-xs-3"></div>
+        </div>
     </div>
 </div>
 

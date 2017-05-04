@@ -8,8 +8,6 @@ app.controller("ngCtl", [ '$scope','$interval', function($scope,$interval) {
     $scope.changeLine = function (lineM) {
         d3.select('svg').remove();
         d3.select('.graphic svg').remove();
-        // var shiftkey = (selectName == 'brush');
-
         $scope.lineM = lineM;
 
         drawLine($scope.lineM,$scope.shiftkey,$interval);
@@ -75,26 +73,12 @@ app.controller("ngCtl", [ '$scope','$interval', function($scope,$interval) {
                 }
             });
 
-            // var plists = getLists(selection,res);
-
             console.log(selection);
-            // lineUp(selection,shiftkey);
             redraw(selection,shiftkey,$interval,res,$scope);
         });
 
     }
 }]);
-
-function getLists(selection,data) {
-    var plist = [];
-    selection.forEach(function (d,i) {
-        plist.find(function (p) {
-            if(p.belong !==d.belong){
-
-            }
-        })
-    })
-}
 
 function redraw(selection,shiftkey,$interval,res,$scope) {
     var margin = {top: 50, right: 160, bottom: 80, left: 50},
@@ -347,8 +331,6 @@ function redraw(selection,shiftkey,$interval,res,$scope) {
         .scaleExtent([1,8])
         .on("zoom", zoomed);
 
-    // $interval(makeselect,10000);
-    // drawInterval();
     function zoomed() {
         console.log('zoom start!');
         $scope.svg.select(".x.axis").call(xAxis);
@@ -430,10 +412,7 @@ function makeselect(shiftkey,$scope) {
         console.log(shiftkey);
         $scope.svg = $scope.svg.call(d3.behavior.zoom().on("zoom", null));
         var brush = $scope.svg.append("g")
-            .datum(function (d) {
-                // console.log(d);
-                return {selected: false};
-            })
+            .datum(function () {return {selected: false};})
             .attr("class", "brush")
             .call(d3.svg.brush()
                 .x(d3.scale.identity().domain([0, svg.width()]))
@@ -456,7 +435,6 @@ function makeselect(shiftkey,$scope) {
                         }
                         // else return true;
                     });
-                    // console.log($('.selected'));
                 })
             );
     }
@@ -485,16 +463,6 @@ function lineUp(selection,shiftKey) {
     var yAxis = d3.svg.axis().scale(y)
         .orient("left").ticks(10);
 
-    // var zoom = d3.behavior.zoom()
-    //     .x(x)
-    //     .y(y)
-    //     .scaleExtent([1, 10])
-    //     .on("zoom", function(){
-    //         console.log("zoom");
-    //         if(shiftKey == false)
-    //         zoomed();
-    //     });
-    //
 // Adds the svg canvas
     var svg = d3.select(".line").append("svg")
         // .call(zoom)
@@ -513,7 +481,6 @@ function lineUp(selection,shiftKey) {
     var line = d3.svg.line()
         .interpolate("linear")
         .x(function (d) {
-            // console.log(d);
             return x(d.id);
         })
         .y(function (d) {
@@ -577,7 +544,6 @@ function lineUp(selection,shiftKey) {
             }
         );
 
-
     // Add the X Axis
     svg.append("g")
         .attr("class", "x axis")
@@ -589,25 +555,6 @@ function lineUp(selection,shiftKey) {
         .attr("class", "y axis")
         .call(yAxis);
 
-    function zoomed() {
-        if (shiftKey) {
-            console.log('zoom shiftKey');
-            return;
-        }
-        console.log('start');
-        svg.select(".x.axis").call(xAxis);
-        svg.select(".y.axis").call(yAxis);
-        svg.selectAll('path.line').attr('d', line);
-
-        // node.selectAll('circle').attr("transform", function (d) {
-            // console.log(d);
-            //     return "translate(" + x(d.point.id) + "," + y(d.point.type) + ")";
-            // }
-        // );
-    }
-
-    // line.data(linedata).enter();
-
     var brush = svg.append("g")
         .datum(function (d) {
             // console.log(d);
@@ -617,18 +564,7 @@ function lineUp(selection,shiftKey) {
         .call(d3.svg.brush()
             .x(d3.scale.identity().domain([0, width]))
             .y(d3.scale.identity().domain([0, height]))
-            // .on("brushstart", function(d) {
-            //     // svg = svg.call(d3.behavior.zoom().on("zoom", null));
-            //     // console.log('brushstart');
-            //     // line.each(function(d) { d.previouslySelected = shiftKey && d.selected });
-            //     if (!shiftKey) {
-            //         d3.event.target.clear();
-            //         d3.select(this).call(d3.event.target);
-            //     }
-            // })
             .on("brush", function () {
-                // if(shiftKey){
-                //     console.log('shiftKey', shiftKey);
                     var extent = d3.event.target.extent();
                     // console.log(extent);
                     node.classed("selected", function (d) {
@@ -638,24 +574,8 @@ function lineUp(selection,shiftKey) {
                         });
                         return d.selected =r;
                         });
-                // } else {
-                //     d3.event.target.clear();
-                //     d3.select(this).call(d3.event.target);
-                // }
             })
         );
-
-            // .on("brushend", function() {
-            // }));
-
-    // var shiftKey;
-    // d3.select(window)
-    //     .on('keydown', function () {
-    //         shiftKey = d3.event.shiftKey;
-    //     })
-    //     .on('keyup', function () {
-    //         shiftKey = false;
-    //     });
 }
 
 function showStatistics1(blist) {
@@ -736,9 +656,7 @@ function showStatistics1(blist) {
                     data.push(record)
                 }
                 console.log(data.length);
-                // console.log(data[0]);
                 var dataGroup=[];
-                // getData(dataGroup,data,list);
                 for(i=0,l=listArray.length;i<l;i++){
                     // console.log(dataGroup);
                     dataGroup=getData1(dataGroup,data,listArray[i]);
@@ -752,17 +670,9 @@ function showStatistics1(blist) {
 }
 function getData1(dataGroup,data,list) {//dataGroup 要得到的统计数据，data，behavior.txt数据，list :rects
     var count=0;
-    // console.log(data[0]);
-    // console.log(list);
     for(var i=0;i<data.length;i++){
-        //for(var i=0;i<100;i++){
-        // if(data[i].list.length==2)console.log(data[i]);
-        //  if(data[i].list.length!=list.length){
-        //      //console.log(data[i]);
-        //      continue;
-        //  }
         for(var j=0;j<list.length;j++){
-            if((list[j].type-data[i].list[j])!=0)break;
+            if((list[j].type-data[i].list[j])!=0)break;//跟 getData 不同的地方
         }
         if(j ==list.length){
             //console.log(i,j,data[i].list.length);
