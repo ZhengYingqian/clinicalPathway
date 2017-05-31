@@ -596,9 +596,11 @@ function showStatistics1(blist) {
             console.log(plists);//plists：[0]:groups;
             var array = [];
             for(var i=0,l=blist.length;i<l;i++){
-                plists[blist[i]-1].forEach(function (d,i) {
-                    array.push(d[0]);//d:[groupId,[posx,posy]]
-                })
+                if(plists[blist[i]].length>0){
+                    plists[blist[i]].forEach(function (d,i) {
+                        array.push(d[0]);//d:[groupId,[posx,posy]]
+                    })
+                }
             }
             console.log(array);
             var listArray=[];
