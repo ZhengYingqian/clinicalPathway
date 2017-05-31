@@ -28,6 +28,7 @@ app.use(express.static(path.join(__dirname, 'app')));
 app.get('/', function (req, res) {
     res.sendfile('app/index.html');
 });
+app.
 
 server.listen(app.get('port'), function () {
     console.log('Express server listening on port ' + app.get('port'));
