@@ -204,7 +204,7 @@ function showup(d,data) {
 }
 var size = [1000, 1000],widthScale = [5, 20],showN=1000,x=0.1;
 
-d3.json("../data/names.json",function (res) {
+d3.json("../data/names16.json",function (res) {
     for(var i=0;i<res.length;i++){
         res[i].s=res[i].Pik*res[i].num;
 

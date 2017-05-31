@@ -242,7 +242,7 @@ function draw1(id,rects,maxSize,data) {
 }
 
 var size = [1000, 1000],widthScale = [5, 10],showN=800,x=0.1;
-d3.json("../data/names.json",function (res) {
+d3.json("../data/names16.json",function (res) {
     for(var i=0;i<res.length;i++){
         res[i].s=res[i].Pik*res[i].p;
 

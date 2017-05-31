@@ -108,7 +108,7 @@ function clear_selection() {
 svg = svg.append("g")
     .attr("transform", "translate(0,0)");
 
-d3.json("../data/names3.json",function (res) {
+d3.json("../data/names16.json",function (res) {
    // console.log(res.length);
 
     res.forEach(function (d) {

@@ -36,7 +36,7 @@ app.controller("ngCtl", [ '$scope','$interval', function($scope,$interval) {
                 // console.log(d,belong);
                 return d ==belong;
             })){
-                bList.push(belong);
+                bList.push(belong+1);
             }
         });
         // console.log(bList);
@@ -54,7 +54,7 @@ app.controller("ngCtl", [ '$scope','$interval', function($scope,$interval) {
     function drawLine(num,shiftkey,$interval) {
         console.log('drawline' + num);
 
-        d3.json("../data/names3.json", function (res) {
+        d3.json("../data/names16.json", function (res) {
             // console.log(res.length);
 
             res.forEach(function (d) {
@@ -580,7 +580,7 @@ function lineUp(selection,shiftKey) {
 
 function showStatistics1(blist) {
     console.log(blist);
-        d3.json("../data/names3.json", function (res) {
+        d3.json("../data/names16.json", function (res) {
             // console.log(res.length);
 
             res.forEach(function (d) {
@@ -596,8 +596,8 @@ function showStatistics1(blist) {
             console.log(plists);//plists：[0]:groups;
             var array = [];
             for(var i=0,l=blist.length;i<l;i++){
-                if(plists[blist[i]].length>0){
-                    plists[blist[i]].forEach(function (d,i) {
+                if(plists[blist[i]-1].length>0){
+                    plists[blist[i]-1].forEach(function (d,i) {
                         array.push(d[0]);//d:[groupId,[posx,posy]]
                     })
                 }
