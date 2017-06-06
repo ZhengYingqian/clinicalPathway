@@ -54,7 +54,7 @@ app.controller("ngCtl", [ '$scope','$interval', function($scope,$interval) {
     function drawLine(num,shiftkey,$interval) {
         console.log('drawline' + num);
 
-        d3.json("../data/names16.json", function (res) {
+        d3.json("../data/names16_patientData5.json", function (res) {
             // console.log(res.length);
 
             res.forEach(function (d) {
@@ -580,7 +580,7 @@ function lineUp(selection,shiftKey) {
 
 function showStatistics1(blist) {
     console.log(blist);
-        d3.json("../data/names16.json", function (res) {
+        d3.json("../data/names16_patientData3.json", function (res) {
             // console.log(res.length);
 
             res.forEach(function (d) {
@@ -612,7 +612,7 @@ function showStatistics1(blist) {
             });
             console.log(listArray);
 
-            $.get('../data/cartbehavior1S.txt').success(function (content) {
+            $.get('../data/statistics.json').success(function (content) {
                 var data=[];
                 content=content.split(/\n/);
                 //  var data=typeof (content);

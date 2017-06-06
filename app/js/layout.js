@@ -38,16 +38,24 @@ function getBound(center, rectLength, rectsNum) {
 }
 //根据状态S的type 返回相应的颜色
 function color(num) {
-    var colorMap={
-        "1": "#3385FF",
-        "2":"#FF9900",
-        "3":"#FF0000",
-        "4":"#FFFF00",
-        "5":"#00FF00"
-        // "6":"#FFA07A"
-    };
+    // var colorMap={
+    //     "1": "#3385FF",
+    //     "2":"#FF9900",
+    //     "3":"#FF0000",
+    //     "4":"#FFFF00",
+    //     "5":"#00FF00"
+    //     // "6":"#FFA07A"
+    // };
+    //
+    var colorMap=new Array(30);
+    for(var i=0;i<30;i++){
+     colorMap[i]=randomHexColor()
+    }
    // console.log(colorMap[num]);
     return colorMap[num];
+}
+function randomHexColor() { //随机生成十六进制颜色
+    return '#' + ('00000' + (Math.random() * 0x1000000 << 0).toString(16)).substr(-6);
 }
 //group：类，bound [x0, y0, x1, y1],outputRects：最终输出所有结果的矩阵
 function pushGroupRects(group, bound, outputRects,maxSize) {
@@ -204,7 +212,7 @@ function showup(d,data) {
 }
 var size = [1000, 1000],widthScale = [5, 20],showN=1000,x=0.1;
 
-d3.json("../data/names16.json",function (res) {
+d3.json("../data/names16_patientData5.json",function (res) {
     for(var i=0;i<res.length;i++){
         res[i].s=res[i].Pik*res[i].num;
 

@@ -1,7 +1,7 @@
 /**
  * Created by yqzheng on 2017/4/15.
  */
-var size = [1100,1200];
+var size = [500,500];
 var widthScale = [5,20];
 var showN = 1000;
 //
@@ -108,8 +108,8 @@ function clear_selection() {
 svg = svg.append("g")
     .attr("transform", "translate(0,0)");
 
-d3.json("../data/names16.json",function (res) {
-   // console.log(res.length);
+d3.json("../data/names16_patientData5.json",function (res) {
+   console.log(res.length);
 
     res.forEach(function (d) {
         d.s=d.Pik*d.p;
@@ -122,7 +122,7 @@ d3.json("../data/names16.json",function (res) {
     x.domain(d3.extent(res,function (d) {return d.OutputX*size[0];})).nice();
     y.domain(d3.extent(res, function(d) { return d.OutputY*size[1]; })).nice();
 
-    svg = svg.call(d3.behavior.zoom().x(x).y(y).on("zoom", zoom));
+    // svg = svg.call(d3.behavior.zoom().x(x).y(y).on("zoom", zoom));
 
 // //x轴label
 //     svg.append("g")

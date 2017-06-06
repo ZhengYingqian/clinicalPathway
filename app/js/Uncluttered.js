@@ -18,7 +18,7 @@ function getLayout1(data,size,widthScale,maxLen){
         spiralInt = 0,
         spiralStep = 0.5,
         padding = 1,
-        numMax = data[0].num,clusters,plists,idx,k=64,num,group,i,j,isConflicting,t=0,
+        numMax = data[0].num,clusters,plists,idx,k=16,num,group,i,j,isConflicting,t=0,
         maxSize=[0,0],bound;
     [clusters,plists]=kMeans1(data,k,size);
     console.log(clusters);
@@ -242,7 +242,7 @@ function draw1(id,rects,maxSize,data) {
 }
 
 var size = [1000, 1000],widthScale = [5, 10],showN=800,x=0.1;
-d3.json("../data/names16.json",function (res) {
+d3.json("../data/names16_patientData5.json",function (res) {
     for(var i=0;i<res.length;i++){
         res[i].s=res[i].Pik*res[i].p;
 
@@ -260,7 +260,7 @@ d3.json("../data/names16.json",function (res) {
 //txt原始数据的处理
 function showStatistics(list){
     // console.log(list);
-$.get('../data/cartbehavior1S.txt').success(function (content) {
+$.get('../data/statistics.json').success(function (content) {
     var data=[];
     content=content.split(/\n/);
    //  var data=typeof (content);

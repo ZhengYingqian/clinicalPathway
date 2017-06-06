@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html>
+<html ng-app="app">
 <head>
-    <title>Intergrated Example</title>
+    <title>Intetgrated View</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 
     <link href="../styles/bootstrap.min.css" rel="stylesheet">
@@ -10,7 +10,7 @@
 
     <script src="../lib/d3.v3.min.js" charset="utf-8"></script>
     <script src="../lib/angular/angular.js" charset="utf-8"></script>
-    <!--<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>-->
+    <!--<script src="../lib/d3.v3.min.js"></script>-->
     <script src="../lib/d3.layout.cloud.js"></script>
     <script src="../lib/jquery.min.js"></script>
     <script src="../lib/bootstrap.min.js"></script>
@@ -21,10 +21,10 @@
     body {
         font-family:"Lucida Grande","Droid Sans",Arial,Helvetica,sans-serif;
     }
-    /*rect {*/
-    /*stroke: black;*/
-    /*stroke-width: 0.1;*/
-    /*}*/
+    rect {
+        stroke: black;
+        stroke-width: 0.1;
+    }
     .legend {
         border: 1px solid #555555;
         border-radius: 5px 5px 5px 5px;
@@ -35,10 +35,15 @@
     .bld {
         font-weight: bold;
     }
+    .extent {
+        fill: #000;
+        fill-opacity: .125;
+        stroke: #fff;
+    }
 </style>
-<body ng-app = 'app'>
+<body>
 
-<div class="container">
+<div ng-controller="mainCtrl">
     <div class="row clearfix">
         <div class="col-md-12 column">
             <nav class="navbar navbar-default" role="navigation">
@@ -48,7 +53,7 @@
 
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                     <ul class="nav navbar-nav">
-                        <li>
+                        <li class="active">
                             <a href="Uncluttered.html">Unclutered view</a>
                         </li>
                         <li>
@@ -57,7 +62,6 @@
                         <!--<li><a href="myCloud.html">myCloud</a></li>-->
                         <!--<li><a href="../lib/eg/index.html">brush</a></li>-->
                         <li><a href="Brush.html">Brush</a></li>
-                        <li class="active"><a href="intergrated.html">intergrated view</a></li>
                     </ul>
                     <!--<form class="navbar-form navbar-left" role="search">-->
                     <!--<div class="form-group">-->
@@ -89,16 +93,52 @@
             </nav>
         </div>
     </div>
-    <div class="row clearfix">
-
-        <div class="col-md-12 column" >
-            <div class="graphic"></div>
-            <!--<div class="rect"></div>-->
+    <div>
+        <h3>
+            子宫肌瘤临床路径研究可视化结果
+        </h3>
+        <div class="row">
+            <div ng-controller="plotCtrl" class="col-md-4 column">
+                <h5>
+                    路径分类结果概览
+                </h5>
+                <div class="Brush center"></div>
+                <h5>表格</h5>
+                <table ng-controller="tabelCtrl" class="table table-hover">
+                    <tr ng-repeat="x in dic">
+                        <td>{{x.index}}</td>
+                        <td>{{x.name}}</td>
+                        <td>{{x.type}}</td>
+                        <td>{{x.color}}</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="col-md-8 column">
+                <div id="Uncluttered"></div>
+            </div>
         </div>
+          <div class="row">
+            <div class="col-md-12 column">
+                <span>选中序列所属类别</span>
+                <div class="showup" style="height: 60px"></div>
+                <!--<input type="button" class="button" >-->
+                <span>所选序列统计信息</span>
+                <div class="col-md-3 column">
+                    <div class="segment col-xs-3"></div>
+                    <div class="gender col-xs-3"></div>
+                    <div class="years col-xs-3"></div>
+                    <div class="cartSize col-xs-3"></div>
+                </div>
+            </div>
+          </div>
     </div>
 </div>
 
 <script src="../js/intergrated.js"></script>
-<script src="../js/rectBrush.js"></script>
+<!--<script src="../js/layout.js"></script>-->
+<!--<script src="../js/Uncluttered.js"></script>-->
+<!--<script src="../js/on.js"></script>-->
+<!--<script src="../js/line.js"></script>-->
+<!--<script src="../js/brush.js"></script>-->
 </body>
 </html>
