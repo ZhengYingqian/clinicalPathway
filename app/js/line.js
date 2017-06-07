@@ -89,7 +89,7 @@ function redraw(selection,shiftkey,$interval,res,$scope) {
     var linedata=[];
     selection.forEach(function (p) {
         var temp = {};
-        temp.name = p.belong;
+        temp.name = p.belong+1;
         temp.values = p.rects;
         linedata.push(temp);
         // colorList.push(p.belong);
@@ -580,7 +580,7 @@ function lineUp(selection,shiftKey) {
 
 function showStatistics1(blist) {
     console.log(blist);
-        d3.json("../data/names16_patientData3.json", function (res) {
+        d3.json("../data/names16_patientData5.json", function (res) {
             // console.log(res.length);
 
             res.forEach(function (d) {
@@ -596,8 +596,8 @@ function showStatistics1(blist) {
             console.log(plists);//plists：[0]:groups;
             var array = [];
             for(var i=0,l=blist.length;i<l;i++){
-                if(plists[blist[i]-1].length>0){
-                    plists[blist[i]-1].forEach(function (d,i) {
+                if(plists[blist[i]].length>0){
+                    plists[blist[i]].forEach(function (d,i) {
                         array.push(d[0]);//d:[groupId,[posx,posy]]
                     })
                 }
@@ -607,61 +607,86 @@ function showStatistics1(blist) {
 
             res.forEach(function (d,i) {
                 if(array.find(function (v) {return v ==d.groupId;})){
-                    listArray.push(d.rects);
+                    listArray.push(d.list);
                 }
             });
             console.log(listArray);
 
             $.get('../data/statistics.json').success(function (content) {
+                var drugs=['',"维生素C", "5%葡萄糖",  "抗贫血药物", "头孢菌素类", "滋阴润肠口服液","复方三维B"],
+                    undrugs=["大换药","护理","备皮","清洁灌肠","备血","医用垫单","留置导尿","吸氧","持续心电监护","血氧饱和度监测","液基薄层细胞制片术","正位片","人乳头瘤病毒核酸检测","肿瘤指标物九项","禁食禁饮","术前灌肠","使用防下肢血栓气压泵治疗"],
+                    ops=["全子宫切除术","双附件切除术","子宫肌瘤切除术","腹腔镜探查术","卵巢囊肿剥除术","宫腔镜检查术"],
+                    items=drugs.concat(undrugs.concat(ops));
                 var data=[];
-                content=content.split(/\n/);
+                console.log(content);
+                console.log(items);
+                // content=content.split(/\n/);
                 //  var data=typeof (content);
                 for(var i=0;i<content.length;i++){
                     var old = content[i];
                     // console.log(i,content[i]);
-                    old=old.split(/\s+/);
-                    record={
-                        'segment':old[0],
-                        'gender':old[1].toLocaleLowerCase(),
-                        'years':old[2],
-                        'time':old[3],
-                        'clickStream':old[6]
+                    var stream=old.alllist.sort();
+                    //     .filter(function (a,b) {
+                    //     return a!=b;
+                    // });
+                    record={//需要表示的是用药类型、年龄、住院时间、/费用/、clickstream则是list
+                        'segment':stream,
+                        // 'gender':old.age,
+                        'years':old.indays,
+                        // 'time':old.indays,
+                        // 'clickStream':old.sequence
+                        'list':old.list
                     };
-                    record.clickStream=record.clickStream.split(',');
-                    record.list=[];
-                    for(var j=0;j<record.clickStream.length;j++){
-                        var x=0;
-                        switch (record.clickStream[j]){
-                            case 'VIEW':
-                                x=1;
-                                break;
-                            case 'ADD':
-                                x=2;
-                                break;
-                            case 'REMOVE':
-                                x=3;
-                                break;
-                            case 'UPDATE':
-                                x=4;
-                                break;
-                            default:
-                                x=5;
-                        }
-                        record.list.push(x);
+                    if(old.age<60){
+                        var y=Math.floor(parseInt(old.age)/10);
+                        record.gender='('+y*10+','+(y+1)*10+')';
+                    }else record.gender='>60';
+                    // record.clickStream=stream.filter(function (a,b) {
+                    //     return a!=b;
+                    // });
+                    // record.list=[];
+                    // for(var j=0;j<record.clickStream.length;j++){
+                    //     var x=0;
+                    //     switch (record.clickStream[j]){
+                    //         case 'VIEW':
+                    //             x=1;
+                    //             break;
+                    //         case 'ADD':
+                    //             x=2;
+                    //             break;
+                    //         case 'REMOVE':
+                    //             x=3;
+                    //             break;
+                    //         case 'UPDATE':
+                    //             x=4;
+                    //             break;
+                    //         default:
+                    //             x=5;
+                    //     }
+                    //     record.list.push(x);
+                    // }
+                   var max = stream[stream.length-1];
+                   if(max>23 && max<30){
+                       console.log(max);
+                       record.segment=items[max];
+                   }else record.segment='无';
+                    for(var j=0;j<stream.length;j++){
+                        record.cartSize=items[stream[j]];
                     }
-                    if(old[4]=='N/A'){
-                        record.cartSize=old[4];
-                    }else if(old[4]<40){
-                        var y=Math.floor(parseInt(old[4])/10);
-                        record.cartSize='('+y*10+','+(y+1)*10+')';
-                    }else record.cartSize='>40';
                     data.push(record)
                 }
                 console.log(data.length);
+                console.log(data[0]);
                 var dataGroup=[];
                 for(i=0,l=listArray.length;i<l;i++){
                     // console.log(dataGroup);
-                    dataGroup=getData1(dataGroup,data,listArray[i]);
+                    // dataGroup=getData1(dataGroup,data,listArray[i]);
+                    for(var j=0;j<data.length;j++){
+                        // for(var j=0;j<list.length;j++) {
+                            if (data[j].list == listArray[i])
+                                dataGroup.push(data[j]);
+                    }
+
                 }
                 createCrossfilterGraphs1(dataGroup);
             });
@@ -671,17 +696,24 @@ function showStatistics1(blist) {
 
 }
 function getData1(dataGroup,data,list) {//dataGroup 要得到的统计数据，data，behavior.txt数据，list :rects
-    var count=0;
+    // var count=0;
+    console.log(data[0]);
+    console.log(dataGroup.length);
+    console.log(data.length);
+    console.log(list.length);
+    console.log(dataGroup[0]);
+    console.log(list[0]);
     for(var i=0;i<data.length;i++){
         for(var j=0;j<list.length;j++){
-            if((list[j].type-data[i].list[j])!=0)break;//跟 getData 不同的地方
-        }
-        if(j ==list.length){
-            //console.log(i,j,data[i].list.length);
-            dataGroup.push(data[i]);
-            count++;
-        }
-    }
+            if(data[i].list==list)dataGroup.push(data[i]);
+        //     // if((list[j].type-data[i].list[j])!=0)break;//跟 getData 不同的地方
+        // }
+        // if(j ==list.length){
+        //     //console.log(i,j,data[i].list.length);
+        //     dataGroup.push(data[i]);
+        //     count++;
+        // }
+    }}
     return dataGroup;
 }
 //设置crossfilter
@@ -726,7 +758,7 @@ function createCrossfilterGraphs1(dataGroup) {
         .height(height)
         .x(d3.scale.ordinal())
         .xUnits(dc.units.ordinal)
-        .xAxisLabel("Buyer Segment")
+        .xAxisLabel("手术类型")
         .dimension(record.dim.segment)
         .group(segmentGroup)
         .elasticY(true)
@@ -735,7 +767,7 @@ function createCrossfilterGraphs1(dataGroup) {
         .height(height)
         .x(d3.scale.ordinal())
         .xUnits(dc.units.ordinal)
-        .xAxisLabel("gender")
+        .xAxisLabel("年龄")
         .dimension(record.dim.gender)
         .group(genderGroup)
         .elasticY(true)
@@ -744,7 +776,7 @@ function createCrossfilterGraphs1(dataGroup) {
         .height(height)
         .x(d3.scale.ordinal())
         .xUnits(dc.units.ordinal)
-        .xAxisLabel("Years being an eBay User")
+        .xAxisLabel("住院时间")
         .dimension(record.dim.years)
         .group(yearsGroup)
         .elasticY(true)
@@ -753,7 +785,7 @@ function createCrossfilterGraphs1(dataGroup) {
         .height(height)
         .x(d3.scale.ordinal())
         .xUnits(dc.units.ordinal)
-        .xAxisLabel("Cart Size")
+        .xAxisLabel("诊疗活动")
         .dimension(record.dim.cartSize)
         .group(cartSizeGroup)
         .elasticY(true)

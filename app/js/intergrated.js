@@ -2,10 +2,6 @@
  * Created by yqzheng on 2017/4/20.
  */
 angular.module('app',[])
-.controller('tabelCtrl',['$scope',function ($scope) {
-    console.log('tabel works!');
-
-}])
     .controller('mainCtrl',['$scope',function ($scope) {
         console.log('maincrtl works!');
         var drugs=['',"维生素C", "5%葡萄糖",  "抗贫血药物", "头孢菌素类", "滋阴润肠口服液","复方三维B"],
@@ -417,6 +413,7 @@ angular.module('app',[])
             var y = d3.scale.linear()
                 .range([maxSize[1], 0]);
 
+
             var selection = [], lis = [];
             var brush = svg.append('g')
                 .attr('class', 'brush')
@@ -675,35 +672,4 @@ angular.module('app',[])
             }
         });
 
-    }])
-.controller('plotCtrl',['$scope',function ($scope) {
-    console.log('plotCtrl works!');
-    // console.log($scope.data.length);
-
-}])
-.factory('ItemService',[function () {
-    var selection=[];
-    return{
-        get_selection:function(){
-            $scope.selection = [];
-            node.each(function(d) {
-                if (d.selected) {
-                    $scope.selection.push(d);
-                }
-            });
-
-            console.log(selection);
-            $scope.selection.forEach(function (d) {
-                var idx = lis.find(function(val){return val ==d.belong});
-                if(!idx){lis.push(d.belong)}
-            });
-            return selection;
-    },
-        clear_selection:function(){
-            node.classed('selected', function (d) { return d.selected = false; });
-            svg.selectAll('.legend').remove();
-            d3.select('.line').remove();
-            lis = [];
-        }
-    }
-}]);
+    }]);

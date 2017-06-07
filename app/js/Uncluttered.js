@@ -262,7 +262,8 @@ function showStatistics(list){
     // console.log(list);
 $.get('../data/statistics.json').success(function (content) {
     var data=[];
-    content=content.split(/\n/);
+    console.log(content);
+    // content=content.split(/\n/);
    //  var data=typeof (content);
    for(var i=0;i<content.length;i++){
         var old = content[i];
