@@ -1,7 +1,7 @@
 /**
  * Created by yqzheng on 2017/4/15.
  */
-var size = [500,500];
+var size = [1000,1000];
 var widthScale = [5,20];
 var showN = 1000;
 //
@@ -108,7 +108,8 @@ function clear_selection() {
 svg = svg.append("g")
     .attr("transform", "translate(0,0)");
 
-d3.json("../data/names16_patientData5.json",function (res) {
+// d3.json("../data/names16_patientData5.json",function (res) {
+d3.json("../data/statistics1.json",function (res) {
    console.log(res.length);
 
     res.forEach(function (d) {
@@ -118,9 +119,29 @@ d3.json("../data/names16_patientData5.json",function (res) {
     res.sort(function (a,b) {
         return b.s-a.s; //按照由大到小排序
     });
+    var nodes=[];
+    res.forEach(function (d) {
+        // console.log(d);
+        var list=d.alllist;
+        console.log(list);
+        var day=0;
+        for(var i=0;i<list.length;i++){
+            var recordP={};
+            recordP.pid=d.pid;
+            recordP.belong=parseInt(d.age/10);
+            if(list[i]===0){
+                day+=1;
+            }else {
+                recordP.OutputX=day;
+                recordP.OutputY=list[i];
+                nodes.push(recordP);
+            }
+        }
 
-    x.domain(d3.extent(res,function (d) {return d.OutputX*size[0];})).nice();
-    y.domain(d3.extent(res, function(d) { return d.OutputY*size[1]; })).nice();
+    });
+    console.log(nodes);
+    x.domain(d3.extent(nodes,function (d) {return d.OutputX*size[0];})).nice();
+    y.domain(d3.extent(nodes, function(d) { return d.OutputY*size[1]; })).nice();
 
     // svg = svg.call(d3.behavior.zoom().x(x).y(y).on("zoom", zoom));
 
@@ -206,7 +227,7 @@ d3.json("../data/names16_patientData5.json",function (res) {
         .style('fill', 'none');
 
     node = svg.selectAll(".dot")
-        .data(res)
+        .data(nodes)
         // .enter().append("rect")
         .enter().append("circle")
         .attr("class", "dot")

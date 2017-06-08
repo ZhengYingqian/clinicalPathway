@@ -241,7 +241,7 @@ function draw1(id,rects,maxSize,data) {
     }
 }
 
-var size = [1000, 1000],widthScale = [5, 10],showN=800,x=0.1;
+var size = [1000, 1000],widthScale = [5, 10],showN=1100,x=0.1;
 d3.json("../data/names16_patientData5.json",function (res) {
     for(var i=0;i<res.length;i++){
         res[i].s=res[i].Pik*res[i].p;

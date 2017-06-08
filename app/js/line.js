@@ -89,7 +89,7 @@ function redraw(selection,shiftkey,$interval,res,$scope) {
     var linedata=[];
     selection.forEach(function (p) {
         var temp = {};
-        temp.name = p.belong+1;
+        temp.name = p.belong;
         temp.values = p.rects;
         linedata.push(temp);
         // colorList.push(p.belong);
@@ -625,12 +625,12 @@ function showStatistics1(blist) {
                 for(var i=0;i<content.length;i++){
                     var old = content[i];
                     // console.log(i,content[i]);
-                    var stream=old.alllist.sort();
+                    var stream=old.alllist;
                     //     .filter(function (a,b) {
                     //     return a!=b;
                     // });
                     record={//需要表示的是用药类型、年龄、住院时间、/费用/、clickstream则是list
-                        'segment':stream,
+                        'segment':stream.sort(),
                         // 'gender':old.age,
                         'years':old.indays,
                         // 'time':old.indays,
@@ -670,13 +670,16 @@ function showStatistics1(blist) {
                        console.log(max);
                        record.segment=items[max];
                    }else record.segment='无';
+                    record.cartSize=[];
                     for(var j=0;j<stream.length;j++){
-                        record.cartSize=items[stream[j]];
+                        record.cartSize.push(items[stream[j]]);
                     }
+                    record.daily=[];
+
                     data.push(record)
                 }
                 console.log(data.length);
-                console.log(data[0]);
+                console.log(data);
                 var dataGroup=[];
                 for(i=0,l=listArray.length;i<l;i++){
                     // console.log(dataGroup);
@@ -718,13 +721,24 @@ function getData1(dataGroup,data,list) {//dataGroup 要得到的统计数据，d
 }
 //设置crossfilter
 function createCrossfilterGraphs1(dataGroup) {
-    var width = 250,
-        height=250,
+    var width = 400,
+        height=350,
         record={};
-
+    var drugs=['',"维生素C", "5%葡萄糖",  "抗贫血药物", "头孢菌素类", "滋阴润肠口服液","复方三维B"],
+        undrugs=["大换药","护理","备皮","清洁灌肠","备血","医用垫单","留置导尿","吸氧","持续心电监护","血氧饱和度监测","液基薄层细胞制片术","正位片","人乳头瘤病毒核酸检测","肿瘤指标物九项","禁食禁饮","术前灌肠","使用防下肢血栓气压泵治疗"],
+        ops=["全子宫切除术","双附件切除术","子宫肌瘤切除术","腹腔镜探查术","卵巢囊肿剥除术","宫腔镜检查术"],
+        items=drugs.concat(undrugs.concat(ops));
     console.log('dataGroup');
     console.log(dataGroup);//dataGroup 和list一样的数据集
     var recordsCf = crossfilter(dataGroup);
+    var cart=[];
+    for(var i=0;i<dataGroup.length;i++){
+        // console.log(dataGroup[i].cartSize);
+       cart=cart.concat(dataGroup[i].cartSize);
+    }
+    console.log(cart.length);
+    cart.sort();
+    var cartFilter=crossfilter(cart);
     record.dim = {
         'segment':recordsCf.dimension(function (d) {
             return d.segment;
@@ -735,14 +749,19 @@ function createCrossfilterGraphs1(dataGroup) {
         'years':recordsCf.dimension(function (d) {
             return d.years;
         }),
-        'cartSize':recordsCf.dimension(function (d) {
-            return d.cartSize;
+        'cartSize':cartFilter.dimension(function (d) {
+            return d;
         })
     };
+    function orderF(p) {
+        return items.indexOf(p);
+    }
+
+
     var segmentGroup = record.dim.segment.group().reduceCount(),
         genderGroup = record.dim.gender.group().reduceCount(),
         yearsGroup = record.dim.years.group().reduceCount(),
-        cartSizeGroup = record.dim.cartSize.group().reduceCount();
+        cartSizeGroup = record.dim.cartSize.group().reduceCount().order(orderF);
 
     var segmentChart = dc.barChart('.segment'),
         genderChart = dc.barChart('.gender'),
@@ -781,8 +800,8 @@ function createCrossfilterGraphs1(dataGroup) {
         .group(yearsGroup)
         .elasticY(true)
         .controlsUseVisibility(true);
-    cartSizeChart.width(width+100)
-        .height(height)
+    cartSizeChart.width(1400)
+        .height(300)
         .x(d3.scale.ordinal())
         .xUnits(dc.units.ordinal)
         .xAxisLabel("诊疗活动")
